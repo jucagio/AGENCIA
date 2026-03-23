@@ -19,9 +19,17 @@ Only implement if you are 100% sure it will work.
 (Auditor)  (Intel &  (Gerente de
            Caps +    Programación)
           Agentes IA)
+    |         |         |
+    +<--forma--+         |
     |_________|_________|
          Audita todo
 ```
+
+**Flujos clave:**
+- Jade forma y capacita a Ego → Ego sabe cómo auditar gracias a Jade
+- Ego audita a Jarvis y Jade → reporta a Juan Camilo
+- Jade alimenta a Jarvis con contexto de mercado y tendencias
+- Todos reportan a Juan Camilo (Gerente Comercial)
 
 ## Agentes disponibles
 
