@@ -107,6 +107,38 @@ En Claude Code (VS Code), usa `@nombre-agente`:
 
 ---
 
+## Pixel Agents — Oficina Virtual del Equipo
+
+Pixel Agents es la extensión de VS Code que da vida visual al equipo de la Agencia. Cada agente aparece como un personaje animado en una oficina pixel art que reacciona en tiempo real a lo que está haciendo.
+
+### Instalación
+```
+ext install pablodelucca.pixel-agents
+```
+O buscar "Pixel Agents" en el marketplace de VS Code.
+
+### Cómo usar con la Agencia
+1. Abrir el panel de Pixel Agents en VS Code (aparece en la barra inferior)
+2. Click **+ Agent** para crear una terminal de Claude Code con su personaje
+3. Invocar al agente: `@jarvis`, `@jade`, `@sasha`, `@brook`, `@erik`, `@cinthya`, `@ego`
+4. El personaje animará en tiempo real: escribe cuando trabaja, espera cuando necesita input
+
+### Qué ve Juan Camilo en la oficina
+| Animación | Significa |
+|-----------|----------|
+| Personaje escribiendo | El agente está generando código o respuesta |
+| Personaje leyendo | El agente está analizando archivos |
+| Burbuja de diálogo | El agente espera input o aprobación |
+| Personaje caminando | El agente está ejecutando comandos |
+| Sonido de chime | El agente terminó su turno |
+
+### Configuración del office
+- El grid es expandible hasta 64×64 tiles
+- Cada agente tiene su propio escritorio en la oficina
+- Editor de layout incluido: floors, walls, furniture
+
+---
+
 ## Tips de productividad (aplicar siempre)
 
 ### Tip 1 — Ultrathink
