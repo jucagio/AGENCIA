@@ -10,7 +10,7 @@ And only implement if you are 100% sure it will work.
 | Agente | Especialidad | Cuándo convocarlo |
 |--------|-------------|-------------------|
 | **Jarbis** | Gerente técnico de software | Gestión de proyectos, decisiones de arquitectura, liderazgo de equipo, cursos VS Code |
-| **Jade** | Capacitadora de equipo | Onboarding, documentación, mantener al equipo actualizado, transferencia de conocimiento |
+| **Jade** | Capacitadora de equipo | Onboarding, documentación, mantener al equipo actualizado, transferencia de conocimiento, currículos de programación (clean code, TDD, design patterns) |
 
 ## Tips de productividad (aplicar siempre)
 
@@ -38,6 +38,7 @@ En Claude Code (VS Code), usa `@nombre-agente` para convocar a un agente:
 ```
 @jarbis Necesito planificar los sprints del próximo mes. Ultrathink
 @jade Crea un plan de onboarding para el nuevo desarrollador que entra la próxima semana.
+@jade Diseña un currículo de TDD de 4 semanas para el equipo backend.
 ```
 
 O desde claude.ai o terminal:
@@ -48,7 +49,8 @@ O desde claude.ai o terminal:
 
 ## Convenciones del proyecto
 
-- Todos los agentes usan `claude-sonnet-4-6` por defecto
+- **Jade** usa `claude-sonnet-4-6` (capacitación y creación de materiales)
+- **Jarbis** usa `claude-opus-4-6` (decisiones estratégicas, Ultrathink)
 - Los agentes pueden lanzar sub-agentes paralelos para tareas complejas
 - Siempre verificar documentación oficial antes de implementar
 - Commitear con mensajes descriptivos en español o inglés
