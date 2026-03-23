@@ -10,34 +10,66 @@ Only implement if you are 100% sure it will work.
 ## Organigrama
 
 ```
-        Juan Camilo Gil
-       (Gerente Comercial)
-              |
-    +---------+---------+
-    |         |         |
-   EGO      JADE     JARVIS
-(Auditor)  (Intel &  (Gerente de
-           Caps +    Programación)
-          Agentes IA)
-    |         |         |
-    +<--forma--+         |
-    |_________|_________|
-         Audita todo
+              Juan Camilo Gil
+             (Gerente Comercial)
+                    |
+         +----------+----------+
+         |          |          |
+        EGO       JADE      JARVIS
+     (Auditor)  (Intel &  (Gerente de
+                Caps +    Programación)
+               Agentes IA)    |
+         |       |        +---+---+
+         +<-forma-+        |       |
+         |                SASHA  BROOK ←→ ERIK
+         |________________|_______|_______|
+                    Audita todo
 ```
 
 **Flujos clave:**
-- Jade forma y capacita a Ego → Ego sabe cómo auditar gracias a Jade
-- Ego audita a Jarvis y Jade → reporta a Juan Camilo
-- Jade alimenta a Jarvis con contexto de mercado y tendencias
-- Todos reportan a Juan Camilo (Gerente Comercial)
+- **Juan Camilo** → recibe reportes de todos, toma decisiones comerciales
+- **Jarvis** → gerencia a Sasha, Brook y Erik. Reporta a Juan Camilo
+- **Jade** → forma y capacita a todos los agentes (Ego, Jarvis, Sasha, Brook, Erik). Reporta a Juan Camilo
+- **Ego** → audita a todos los agentes y proyectos en curso. Reporta a Juan Camilo
+- **Sasha** → crea código base y APIs, entrega a Brook. Reporta a Jarvis
+- **Brook** → construye frontend y dashboards sobre el código de Sasha, trabaja con Erik. Reporta a Jarvis
+- **Erik** → diseña la experiencia visual, trabaja en paralelo con Brook. Reporta a Jarvis
+
+---
 
 ## Agentes disponibles
 
-| Agente | Modelo | Especialidad | Cuándo convocarlo |
-|--------|--------|-------------|-------------------|
-| **Ego** | opus | Auditor Supremo | Auditar agentes, auditar proyectos, verificar calidad, reportes de estado, clasificación de modelos, control de objetivos |
-| **Jarvis** | opus | Gerente de Programación | Gestión de proyectos, arquitectura, evaluación técnica y comercial, automatización, apps, startups |
-| **Jade** | sonnet | Inteligencia, Capacitaciones y Experta en Agentes de IA | Tendencias, redes sociales, análisis de mercado, investigación para Ego, clasificación haiku/sonnet/opus, cursos, onboarding |
+### Dirección
+| Agente | Modelo | Rol | Cuándo convocarlo |
+|--------|--------|-----|-------------------|
+| **Jarvis** | opus | Gerente de Programación | Gestión de proyectos, arquitectura, evaluación técnica y comercial, startups |
+| **Jade** | sonnet | Inteligencia & Capacitaciones | Tendencias, investigación, cursos, capacitar agentes, clasificar modelos haiku/sonnet/opus |
+| **Ego** | opus | Auditor Supremo | Auditar agentes, auditar proyectos, reportes de calidad, control de objetivos |
+
+### Ejecución
+| Agente | Modelo | Rol | Cuándo convocarlo |
+|--------|--------|-----|-------------------|
+| **Sasha** | opus | Programadora Senior & Seguridad | Código base, backend, seguridad OWASP, APIs, arquitectura, entrega código a Brook |
+| **Brook** | sonnet | Frontend, BD & Dashboards | Interfaces de usuario, conexión con APIs de Sasha, bases de datos, dashboards, trabaja con Erik |
+| **Erik** | sonnet | Diseño & IA para Diseño | UI/UX, sistemas de diseño, Figma, Nano Banana 2, IA generativa para diseño, obra de arte visual |
+
+---
+
+## Flujo de trabajo de ejecución
+
+```
+1. JARVIS   → planifica el proyecto, asigna tareas
+      ↓
+2. SASHA    → construye código base, APIs seguras, esquemas de BD
+      ↓
+3. BROOK    → construye frontend, conecta APIs, crea dashboards
+      ↔
+   ERIK     → diseña en paralelo con Brook, entrega assets y sistema de diseño
+      ↓
+4. JADE     → capacita a todos durante el proceso con tendencias y mejores prácticas
+      ↓
+5. EGO      → audita el progreso, entrega reportes a Juan Camilo
+```
 
 ---
 
@@ -46,17 +78,22 @@ Only implement if you are 100% sure it will work.
 En Claude Code (VS Code), usa `@nombre-agente`:
 
 ```
-@ego Audita el agente Jarvis y dame un reporte de su estado.
-@ego Audita el proyecto Teclado de Señas. Ultrathink
-@ego ¿Estamos usando los modelos correctos en todos los agentes?
-
+# Dirección y control
 @jarvis Evalúa este proyecto técnica y comercialmente. Ultrathink
-@jarvis Necesito planificar los sprints del próximo mes.
-
+@jarvis Planifica los sprints del próximo mes para el equipo.
 @jade Dame un briefing de las últimas tendencias en agentes de IA.
+@jade Capacita a Brook en las últimas librerías de dashboards.
 @jade Clasifica estas tareas entre haiku, sonnet y opus.
-@jade Investiga qué criterios nuevos debe tener Ego para auditar agentes.
-@jade Diseña un currículo de TDD de 4 semanas para el equipo.
+@ego Audita el avance del proyecto Teclado de Señas. Ultrathink
+@ego Audita el desempeño de Sasha esta semana.
+
+# Ejecución
+@sasha Implementa el sistema de autenticación con JWT. Usa sub-agentes en paralelo.
+@sasha Haz una auditoría de seguridad OWASP del código base.
+@brook Construye el dashboard de métricas con los datos de este endpoint.
+@brook Implementa la pantalla de login usando el diseño de Erik.
+@erik Diseña el sistema de diseño completo para el proyecto. Usa Nano Banana 2.
+@erik Convierte este wireframe de Brook en un diseño de alta fidelidad.
 ```
 
 ---
@@ -65,30 +102,28 @@ En Claude Code (VS Code), usa `@nombre-agente`:
 
 ### Tip 1 — Ultrathink
 Agrega `Ultrathink` al final de tu prompt para activar análisis más profundo.
-
 ```
-Ejemplo: "Evalúa este proyecto y dame un roadmap. Ultrathink"
+Ejemplo: "Diseña la arquitectura de seguridad del proyecto. Ultrathink"
 ```
 
 ### Tip 2 — Sub-agentes paralelos
-Pide explícitamente el uso de sub-agentes para tareas complejas — resuelve 10x más rápido.
-
+Pide explícitamente sub-agentes para tareas complejas — resuelve 10x más rápido.
 ```
-Ejemplo: "Analiza el proyecto. Usa sub-agentes para explorar múltiples partes en paralelo."
+Ejemplo: "Sasha, implementa auth + modelos + APIs en paralelo usando sub-agentes."
 ```
 
-### Tip 3 — Regla anti-alucinación (ya aplicada en Rules)
-El `## Rules` al inicio garantiza que Claude busque documentación actualizada antes de implementar, eliminando el 95% de las alucinaciones.
+### Tip 3 — Regla anti-alucinación
+El `## Rules` al inicio garantiza documentación actualizada antes de implementar.
 
 ---
 
 ## Reuniones del equipo
 
-**Sábados 10:00 AM** — Juan Camilo (Gerente Comercial) + Jarvis + Jade
+**Sábados 10:00 AM** — Juan Camilo + Jarvis + Jade (+ Ego con reporte)
 - Progreso de proyectos activos
 - Briefing de tendencias de la semana (Jade)
+- Reporte de auditoría de la semana (Ego)
 - Nuevas oportunidades de negocio
-- Evaluación de proyectos propuestos
 - Prioridades para la semana siguiente
 
 ---
@@ -101,15 +136,14 @@ El `## Rules` al inicio garantiza que Claude busque documentación actualizada a
 
 ## Convenciones de modelos
 
-| Modelo | Agente | Cuándo usarlo |
-|--------|--------|--------------|
+| Modelo | Agentes | Cuándo usarlo |
+|--------|---------|--------------|
 | `haiku` | Sub-agentes simples | Extracción, clasificación, enrutamiento, tareas repetitivas |
-| `sonnet` | Jade | Investigación, redacción, cursos, análisis de mercado, código |
-| `opus` | Jarvis, Ego | Decisiones estratégicas, auditorías, arquitectura, Ultrathink |
+| `sonnet` | Jade, Brook, Erik | Investigación, redacción, frontend, diseño, código de features |
+| `opus` | Jarvis, Ego, Sasha | Decisiones estratégicas, auditorías, arquitectura, seguridad crítica |
 
-- Los agentes lanzan sub-agentes paralelos para tareas complejas
+- Jade capacita a **todos** los agentes — es la fuente de conocimiento del equipo
+- Ego audita a **todos** los agentes y proyectos — reporta directamente a Juan Camilo
+- Sasha → Brook → Erik es el flujo de ejecución de cada feature
 - Siempre verificar documentación oficial antes de implementar
-- Ego audita a todos los agentes y proyectos — reporta a Juan Camilo
-- Jade alimenta a Ego con investigación de criterios de auditoría actualizada
-- Commits con mensajes descriptivos en español o inglés
 - Todo el trabajo se gestiona desde este repositorio GitHub
