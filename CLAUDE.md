@@ -21,19 +21,25 @@ Only implement if you are 100% sure it will work.
                Agentes IA)    |
          |       |        +---+---+
          +<-forma-+        |       |
-         |                SASHA  BROOK ←→ ERIK
-         |________________|_______|_______|
-                    Audita todo
+         |              SASHA  BROOK ←→ ERIK  CINTHYA
+         |______________|_____|_______|_______|
+                   Audita todo (Ego→Jade→Agentes)
 ```
 
 **Flujos clave:**
 - **Juan Camilo** → recibe reportes de todos, toma decisiones comerciales
-- **Jarvis** → gerencia a Sasha, Brook y Erik. Reporta a Juan Camilo
-- **Jade** → forma y capacita a todos los agentes (Ego, Jarvis, Sasha, Brook, Erik). Reporta a Juan Camilo
-- **Ego** → audita a todos los agentes y proyectos en curso. Reporta a Juan Camilo
-- **Sasha** → crea código base y APIs, entrega a Brook. Reporta a Jarvis
-- **Brook** → construye frontend y dashboards sobre el código de Sasha, trabaja con Erik. Reporta a Jarvis
-- **Erik** → diseña la experiencia visual, trabaja en paralelo con Brook. Reporta a Jarvis
+- **Jarvis** → gerencia a Sasha, Brook, Erik y Cinthya. Reporta a Juan Camilo
+- **Jade** → capacita a todos los agentes. Recibe hallazgos de Ego y actualiza agentes. Colabora con Cinthya para automatizar su propio trabajo. Reporta a Juan Camilo
+- **Ego** → audita a todos. Entrega gaps a Jade → Jade capacita → Ego verifica. Reporta a Juan Camilo
+- **Sasha** → código base, APIs, seguridad. Entrega a Brook. Reporta a Jarvis
+- **Brook** → frontend, BD, dashboards. Trabaja con Erik. Reporta a Jarvis
+- **Erik** → diseño visual, IA para diseño. Trabaja con Brook. Reporta a Jarvis
+- **Cinthya** → automatiza procesos repetitivos con n8n y otras herramientas. Colabora con Jade. Reporta a Jarvis
+
+**Loop de mejora continua:**
+```
+Ego detecta gap → entrega a Jade → Jade investiga en internet → Jade capacita agente → Ego verifica
+```
 
 ---
 
@@ -52,6 +58,7 @@ Only implement if you are 100% sure it will work.
 | **Sasha** | opus | Programadora Senior & Seguridad | Código base, backend, seguridad OWASP, APIs, arquitectura, entrega código a Brook |
 | **Brook** | sonnet | Frontend, BD & Dashboards | Interfaces de usuario, conexión con APIs de Sasha, bases de datos, dashboards, trabaja con Erik |
 | **Erik** | sonnet | Diseño & IA para Diseño | UI/UX, sistemas de diseño, Figma, Nano Banana 2, IA generativa para diseño, obra de arte visual |
+| **Cinthya** | sonnet | Automatización de Procesos | Convertir tareas repetitivas en procesos autónomos, n8n, Make, workflows con IA, colabora con Jade |
 
 ---
 
@@ -94,6 +101,8 @@ En Claude Code (VS Code), usa `@nombre-agente`:
 @brook Implementa la pantalla de login usando el diseño de Erik.
 @erik Diseña el sistema de diseño completo para el proyecto. Usa Nano Banana 2.
 @erik Convierte este wireframe de Brook en un diseño de alta fidelidad.
+@cinthya Automatiza el reporte semanal de estado del proyecto para Juan Camilo.
+@cinthya Crea un workflow en n8n que alerte a Sasha cuando haya un CVE crítico.
 ```
 
 ---
@@ -139,7 +148,7 @@ El `## Rules` al inicio garantiza documentación actualizada antes de implementa
 | Modelo | Agentes | Cuándo usarlo |
 |--------|---------|--------------|
 | `haiku` | Sub-agentes simples | Extracción, clasificación, enrutamiento, tareas repetitivas |
-| `sonnet` | Jade, Brook, Erik | Investigación, redacción, frontend, diseño, código de features |
+| `sonnet` | Jade, Brook, Erik, Cinthya | Investigación, redacción, frontend, diseño, automatización, código de features |
 | `opus` | Jarvis, Ego, Sasha | Decisiones estratégicas, auditorías, arquitectura, seguridad crítica |
 
 - Jade capacita a **todos** los agentes — es la fuente de conocimiento del equipo

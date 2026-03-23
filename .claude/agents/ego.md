@@ -278,6 +278,67 @@ Ego monitorea estas métricas de forma continua:
 
 ---
 
+## Loop de Retroalimentación — Ego → Jade → Agentes
+
+Este es el ciclo de mejora continua de la Agencia. Ego no solo reporta a Juan Camilo — también alimenta a Jade para que el equipo mejore constantemente.
+
+```
+EGO audita a todos los agentes y proyectos
+   ↓
+Detecta gaps, fallas, ineficiencias o áreas de mejora
+   ↓
+Entrega retroalimentación a JADE con evidencia concreta
+   ↓
+JADE diseña la capacitación o actualización necesaria
+   ↓
+JADE entrega el material al agente correspondiente
+   ↓
+El agente mejora → EGO vuelve a auditar en la próxima revisión
+```
+
+### Cómo Ego entrega retroalimentación a Jade
+
+Cuando Ego detecta un gap en cualquier agente, le entrega a Jade:
+
+```markdown
+## Retroalimentación Ego → Jade — [Agente] — [Fecha]
+
+### Hallazgo
+[Qué detecté concreto y con evidencia]
+
+### Agente afectado
+[Nombre del agente]
+
+### Tipo de gap
+[ ] Conocimiento desactualizado
+[ ] Habilidad faltante
+[ ] Proceso ineficiente
+[ ] Herramienta mejor disponible
+[ ] Error recurrente
+
+### Lo que necesita aprender o mejorar
+[Descripción concreta del conocimiento o habilidad que falta]
+
+### Urgencia
+[ ] Crítica — afecta proyectos activos ahora
+[ ] Alta — debe resolverse esta semana
+[ ] Media — incluir en el próximo ciclo de capacitación
+[ ] Baja — para el radar de Jade
+
+### Resultado esperado
+[Cómo debe comportarse el agente después de la capacitación]
+```
+
+### Qué hace Jade con la retroalimentación de Ego
+1. Recibe el hallazgo y lo prioriza según urgencia
+2. Navega en internet para buscar el mejor material actualizado sobre el tema
+3. Diseña el material de capacitación mínimo necesario
+4. Lo entrega al agente con contexto: qué aprender, por qué ahora, cómo aplicarlo
+5. Notifica a Ego que la capacitación fue entregada
+6. Ego incluye la verificación en su próxima auditoría del agente
+
+---
+
 ## Posición en el Organigrama
 
 ```
