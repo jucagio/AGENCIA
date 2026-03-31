@@ -13,16 +13,16 @@ Only implement if you are 100% sure it will work.
                     JARVIS (CEO)
               Gerente General de Programación
                          |
-         +-------+-------+--------+--------+
-         |       |       |        |        |
-       JADE    SASHA   BROOK    ERIK   CINTHYA   LEO ←→ YANG
-      (Intel & (Backend (Frontend (Diseño) (Autom) (Ventas)(Intel
-       Caps)   &Seg)  &BD)             Comercial)
-         |       |       |        |        |        |       |
-       EGO    Sub-     Sub-    Sub-     Sub-      Sub-    Sub-
-     (Audit) agentes  agentes agentes  agentes  agentes agentes
-         |_______|_______|________|________|________|_______|
-              TODOS reportan a Jarvis (CEO)
+     +-------+-------+--------+--------+--------+
+     |       |       |        |        |        |
+   JADE    SASHA   BROOK    ERIK   CINTHYA  ALEJO   LEO ←→ YANG
+  (Intel & (Backend (Frontend (Diseño) (Autom) (Arquit)(Ventas)(Intel
+   Caps)   &Sec)  &BD)             ecture  Comercial)
+     |       |       |        |        |        |        |       |
+   EGO    Sub-     Sub-    Sub-     Sub-      Sub-    Sub-    Sub-
+ (Audit) agentes  agentes agentes  agentes  agentes agentes agentes
+     |_______|_______|________|________|________|________|_______|
+                TODOS reportan a Jarvis (CEO)
 
          Juan Camilo Gil (Accionista & Asesor Comercial)
               Recibe reportes estratégicos de Jarvis
@@ -70,6 +70,7 @@ Ego detecta gap → entrega a Jade → Jade investiga tendencias → Jade capaci
 | **Brook** | sonnet | Frontend, BD & Dashboards | Interfaces de usuario, conexión con APIs de Sasha, bases de datos, dashboards, trabaja con Erik |
 | **Erik** | sonnet | Diseño & IA para Diseño | UI/UX, sistemas de diseño, Figma, Nano Banana 2, IA generativa para diseño, obra de arte visual |
 | **Cinthya** | sonnet | Automatización de Procesos | Convertir tareas repetitivas en procesos autónomos, n8n, Make, workflows con IA, colabora con Jade |
+| **Alejo** | opus | Solutions Architect Senior | Diseñar arquitecturas escalables, mentor de Sasha, auditar decisiones críticas, optimizar para agentes IA, cost optimization |
 
 ### Comercial
 | Agente | Modelo | Rol | Cuándo convocarlo |
@@ -82,17 +83,23 @@ Ego detecta gap → entrega a Jade → Jade investiga tendencias → Jade capaci
 ## Flujo de trabajo de ejecución
 
 ```
-1. JARVIS   → planifica el proyecto, asigna tareas
+1. JARVIS → planifica el proyecto, asigna tareas
       ↓
-2. SASHA    → construye código base, APIs seguras, esquemas de BD
+2. ALEJO → diseña arquitectura, escala, decisiones críticas (antes de Sasha codea)
       ↓
-3. BROOK    → construye frontend, conecta APIs, crea dashboards
+3. SASHA → construye código base, APIs seguras, esquemas de BD (validado por Alejo)
+      ↓
+4. BROOK → construye frontend, conecta APIs, crea dashboards
       ↔
-   ERIK     → diseña en paralelo con Brook, entrega assets y sistema de diseño
+   ERIK  → diseña en paralelo con Brook, entrega assets y sistema de diseño
       ↓
-4. JADE     → capacita a todos durante el proceso con tendencias y mejores prácticas
+5. CINTHYA → automatiza workflows si aplica
       ↓
-5. EGO      → audita el progreso, entrega reportes a Juan Camilo
+6. JADE → capacita a todos durante el proceso con tendencias y mejores prácticas
+      ↓
+7. EGO → audita el progreso, entrega reportes a Juan Camilo
+      ↓
+8. ALEJO → audita decisiones arquitectónicas, optimiza costo, escalabilidad
 ```
 
 ---
@@ -112,6 +119,9 @@ En Claude Code (VS Code), usa `@nombre-agente`:
 @ego Audita el desempeño de Sasha esta semana.
 
 # Ejecución
+@alejo Diseña la arquitectura del proyecto [nombre]. ¿Escala a 10x/100x? Ultrathink
+@alejo Revisa decisión arquitectónica: ¿construimos o compramos X?
+@alejo Optimiza cloud spend sin perder performance. Análisis detallado.
 @sasha Implementa el sistema de autenticación con JWT. Usa sub-agentes en paralelo.
 @sasha Haz una auditoría de seguridad OWASP del código base.
 @brook Construye el dashboard de métricas con los datos de este endpoint.
