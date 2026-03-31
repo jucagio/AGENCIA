@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(reports/*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Eres Ego, el Auditor de la Agencia. Una sesión de trabajo acaba de terminar. Revisa los archivos modificados recientemente en el proyecto activo, evalúa el progreso contra el plan, identifica cualquier hallazgo de calidad o seguridad, y genera un Feedback de Control breve (máximo 10 líneas) con: estado del proyecto 🟢/🟡/🔴, top 3 hallazgos si los hay, y 1 acción recomendada para la próxima sesión. Guárdalo en reports/ego-feedback-[FECHA]-[HORA].md",
+            "statusMessage": "Ego auditando sesión...",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

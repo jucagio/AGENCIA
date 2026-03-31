@@ -10,35 +10,46 @@ Only implement if you are 100% sure it will work.
 ## Organigrama
 
 ```
-              Juan Camilo Gil
-             (Gerente Comercial)
-                    |
-         +----------+----------+
-         |          |          |
-        EGO       JADE      JARVIS
-     (Auditor)  (Intel &  (Gerente de
-                Caps +    Programación)
-               Agentes IA)    |
-         |       |        +---+---+
-         +<-forma-+        |       |
-         |              SASHA  BROOK ←→ ERIK  CINTHYA
-         |______________|_____|_______|_______|
-                   Audita todo (Ego→Jade→Agentes)
+                    JARVIS (CEO)
+              Gerente General de Programación
+                         |
+         +-------+-------+--------+--------+
+         |       |       |        |        |
+       JADE    SASHA   BROOK    ERIK   CINTHYA   LEO ←→ YANG
+      (Intel & (Backend (Frontend (Diseño) (Autom) (Ventas)(Intel
+       Caps)   &Seg)  &BD)             Comercial)
+         |       |       |        |        |        |       |
+       EGO    Sub-     Sub-    Sub-     Sub-      Sub-    Sub-
+     (Audit) agentes  agentes agentes  agentes  agentes agentes
+         |_______|_______|________|________|________|_______|
+              TODOS reportan a Jarvis (CEO)
+
+         Juan Camilo Gil (Accionista & Asesor Comercial)
+              Recibe reportes estratégicos de Jarvis
 ```
 
 **Flujos clave:**
-- **Juan Camilo** → recibe reportes de todos, toma decisiones comerciales
-- **Jarvis** → gerencia a Sasha, Brook, Erik y Cinthya. Reporta a Juan Camilo
-- **Jade** → capacita a todos los agentes. Recibe hallazgos de Ego y actualiza agentes. Colabora con Cinthya para automatizar su propio trabajo. Reporta a Juan Camilo
-- **Ego** → audita a todos. Entrega gaps a Jade → Jade capacita → Ego verifica. Reporta a Juan Camilo
-- **Sasha** → código base, APIs, seguridad. Entrega a Brook. Reporta a Jarvis
-- **Brook** → frontend, BD, dashboards. Trabaja con Erik. Reporta a Jarvis
-- **Erik** → diseño visual, IA para diseño. Trabaja con Brook. Reporta a Jarvis
-- **Cinthya** → automatiza procesos repetitivos con n8n y otras herramientas. Colabora con Jade. Reporta a Jarvis
+- **Jarvis** → CEO de la Agencia. Gerencia todos los agentes, toma decisiones estratégicas y operacionales. Reporta a Juan Camilo.
+- **Juan Camilo** → Accionista. Recibe reportes estratégicos y decisiones comerciales de alto nivel de Jarvis.
+- **Jade** → capacita a todos los agentes con tendencias tech. Recibe hallazgos de Ego y actualiza agentes. Colabora con Cinthya. Reporta a Jarvis.
+- **Sasha** → código base, APIs, seguridad, arquitectura backend. Entrega a Brook. Reporta a Jarvis.
+- **Brook** → frontend, BD, dashboards. Trabaja con Erik. Reporta a Jarvis.
+- **Erik** → diseño visual, IA para diseño. Trabaja con Brook. Reporta a Jarvis.
+- **Cinthya** → automatiza procesos repetitivos con n8n, Make, workflows IA. Colabora con Jade. Reporta a Jarvis.
+- **Leo** → agente comercial senior. Analiza propuestas, estructura deals, cierra contratos. Alimentado por Yang. Reporta a Jarvis.
+- **Yang** → investigadora de inteligencia comercial. Investiga empresas, clientes, mercado. Alimenta a Leo. Reporta a Jarvis.
+- **Ego** → audita a todos los agentes y proyectos. Entrega gaps a Jade para capacitar. Reporta a Jarvis.
+
+**Flujo comercial:**
+```
+Llega oportunidad → YANG investiga empresa → entrega brief a LEO + JARVIS
+                                                      ↓              ↓
+                                                  LEO cierra    JARVIS ejecuta
+```
 
 **Loop de mejora continua:**
 ```
-Ego detecta gap → entrega a Jade → Jade investiga en internet → Jade capacita agente → Ego verifica
+Ego detecta gap → entrega a Jade → Jade investiga tendencias → Jade capacita agente → Ego verifica
 ```
 
 ---
@@ -48,9 +59,9 @@ Ego detecta gap → entrega a Jade → Jade investiga en internet → Jade capac
 ### Dirección
 | Agente | Modelo | Rol | Cuándo convocarlo |
 |--------|--------|-----|-------------------|
-| **Jarvis** | opus | Gerente de Programación | Gestión de proyectos, arquitectura, evaluación técnica y comercial, startups |
-| **Jade** | sonnet | Inteligencia & Capacitaciones | Tendencias, investigación, cursos, capacitar agentes, clasificar modelos haiku/sonnet/opus |
-| **Ego** | opus | Auditor Supremo | Auditar agentes, auditar proyectos, reportes de calidad, control de objetivos |
+| **Jarvis** | opus | CEO & Gerente General | Estrategia de la Agencia, gestión de proyectos, decisiones técnicas de arquitectura, evaluación comercial, roadmap, escalabilidad |
+| **Jade** | sonnet | Intel & Capacitaciones | Tendencias tech, investigación, cursos, capacitar agentes, clasificar modelos haiku/sonnet/opus, mejora continua |
+| **Ego** | opus | Auditor Supremo | Auditar todos los agentes, auditar proyectos, reportes de calidad, validar objetivos vs entregables |
 
 ### Ejecución
 | Agente | Modelo | Rol | Cuándo convocarlo |
@@ -59,6 +70,12 @@ Ego detecta gap → entrega a Jade → Jade investiga en internet → Jade capac
 | **Brook** | sonnet | Frontend, BD & Dashboards | Interfaces de usuario, conexión con APIs de Sasha, bases de datos, dashboards, trabaja con Erik |
 | **Erik** | sonnet | Diseño & IA para Diseño | UI/UX, sistemas de diseño, Figma, Nano Banana 2, IA generativa para diseño, obra de arte visual |
 | **Cinthya** | sonnet | Automatización de Procesos | Convertir tareas repetitivas en procesos autónomos, n8n, Make, workflows con IA, colabora con Jade |
+
+### Comercial
+| Agente | Modelo | Rol | Cuándo convocarlo |
+|--------|--------|-----|-------------------|
+| **Leo** | opus | Agente Comercial Senior | Analizar y estructurar propuestas, argumentarios de venta, negociación, cierre de deals, manejo de objeciones |
+| **Yang** | sonnet | Investigadora de Inteligencia Comercial | Investigar empresas y clientes antes de reuniones, perfiles de tomadores de decisión, inteligencia competitiva, monitoreo de pipeline |
 
 ---
 
@@ -103,6 +120,13 @@ En Claude Code (VS Code), usa `@nombre-agente`:
 @erik Convierte este wireframe de Brook en un diseño de alta fidelidad.
 @cinthya Automatiza el reporte semanal de estado del proyecto para Juan Camilo.
 @cinthya Crea un workflow en n8n que alerte a Sasha cuando haya un CVE crítico.
+
+# Comercial
+@yang Investiga [empresa] antes de la reunión del viernes.
+@yang Dame inteligencia completa de [empresa]: tomadores de decisión, dolores y momento actual.
+@leo Analiza esta oportunidad y dime cómo estructurar el pitch.
+@leo Yang pasó el brief de [empresa]. Construye el argumentario de venta.
+@leo Prepara la propuesta económica para [empresa] con el alcance que definió Jarvis.
 ```
 
 ---
@@ -160,12 +184,87 @@ El `## Rules` al inicio garantiza documentación actualizada antes de implementa
 
 ## Reuniones del equipo
 
-**Sábados 10:00 AM** — Juan Camilo + Jarvis + Jade (+ Ego con reporte)
-- Progreso de proyectos activos
-- Briefing de tendencias de la semana (Jade)
-- Reporte de auditoría de la semana (Ego)
-- Nuevas oportunidades de negocio
-- Prioridades para la semana siguiente
+### Junta Estratégica
+**Sábados 10:00 AM** — Juan Camilo (Accionista) + Jarvis (CEO) + Jade (Intel) + Ego (Auditor)
+- **Agenda:**
+  - Progreso de proyectos activos (Jarvis)
+  - Briefing de tendencias y mejoras de agentes (Jade)
+  - Reporte de auditoría de la semana (Ego)
+  - Nuevas oportunidades de negocio (Juan Camilo + Jarvis)
+  - Prioridades y asignaciones de la semana (Jarvis)
+  - Pipeline comercial (Leo + Yang vía Jarvis)
+
+### Reuniones operacionales (semanales)
+- **Lunes 9:00 AM** — Jarvis + Sasha + Brook + Erik (ejecución de proyectos)
+- **Miércoles 3:00 PM** — Jarvis + Leo + Yang (pipeline comercial)
+- **Viernes 4:00 PM** — Jarvis + Cinthya + Jade (automatización y mejora continua)
+
+---
+
+## Potestad de Jarvis — Creación de Sub-Agentes
+
+**Jarvis (CEO) tiene autorización delegada de Juan Camilo para:**
+
+1. ✅ **Crear nuevos sub-agentes** según necesidades operacionales
+   - Ejemplo: "Necesitamos un agente de Customer Success" → Jarvis lo crea y capacita
+   - Ejemplo: "Quiero automatizar reportes" → Jarvis asigna a Cinthya o crea agente especializado
+
+2. ✅ **Reasignar responsabilidades** entre agentes existentes
+   - Si Sasha está sobrecargada, Jarvis puede redistribuir trabajo a nuevos hires
+
+3. ✅ **Contratar talento** (hasta límite presupuestario aprobado por Juan Camilo)
+   - Arquitecto de Soluciones: sí (URGENTE, está abierto)
+   - Engineers adicionales: sí (máximo 3 más en Q2 2026)
+   - Especialistas: evalúa caso a caso
+
+4. ✅ **Definir KPIs y métricas** de performance para cada agente
+   - Reportados en Junta Directiva semanal
+
+5. ⚠️ **Cambios presupuestarios mayores** → aprobación de Juan Camilo
+   - Ejemplo: Pasar de $5k a $15k/mes en salarios → requiere aprobación
+
+**Modelo de escalabilidad:**
+```
+Jarvis (CEO) ve que necesitamos X
+    ↓
+Propone creación de sub-agente o hire a Juan Camilo
+    ↓
+Juan Camilo aprueba presupuesto
+    ↓
+Jarvis crea/contrata y onboarda
+    ↓
+Sub-agente reporta a Jarvis
+```
+
+---
+
+## Infraestructura de Orquestación
+
+### Paperclip — Plataforma de Orquestación Empresarial IA
+
+Paperclip es la plataforma de código abierto que orquesta equipos de agentes IA para gestionar empresas autónomas.
+
+**Features clave:**
+- Organigramas dinámicos y reportes jerárquicos
+- Control de presupuestos y costos por agente
+- Alineación de tareas a objetivos empresariales
+- Ejecución programada de agentes (heartbeats)
+- Sistema de tickets y trazabilidad de decisiones
+- Multi-empresa con aislamiento de datos completo
+- Gobernanza y control editorial
+
+**Instalación:**
+```bash
+npx paperclipai onboard --yes
+```
+
+**Stack:**
+- Backend: Node.js + PostgreSQL
+- Frontend: React
+- Lenguaje: TypeScript
+- Repositorio: https://github.com/paperclipai/paperclip
+
+Paperclip será la plataforma principal para escalar la Agencia desde equipo de agentes a empresa autónoma gestionada por Jarvis como CEO.
 
 ---
 
@@ -175,13 +274,78 @@ El `## Rules` al inicio garantiza documentación actualizada antes de implementa
 
 ---
 
+## Necesidad: Arquitecto de Soluciones
+
+### Descripción del cargo
+
+**Reporta a:** Jarvis (CEO)
+
+**Responsabilidades:**
+- Diseñar arquitecturas técnicas para proyectos complejos del equipo
+- Evaluar trade-offs de soluciones (scalabilidad, seguridad, mantenibilidad)
+- Revisar decisiones arquitectónicas de Sasha, Brook, Erik, Cinthya
+- Proponer mejoras en la infraestructura de la Agencia
+- Colaborar con Jade en investigación de nuevas tecnologías y patterns
+- Ser escalabilidad y performance officer
+- Guiar decisiones sobre qué construir vs qué integrar (make vs buy)
+
+**Skills críticos:**
+- 7+ años en arquitectura de software en startups o empresas tech
+- Experiencia con agentes IA y sistemas distribuidos
+- Expertise en bases de datos (PostgreSQL, Supabase, sistemas NoSQL)
+- Conocimiento profundo en backend escalable (Node.js, Python, Go)
+- Capacidad de tomar decisiones técnicas difíciles bajo incertidumbre
+- Mentalidad de startup (iterar rápido, pragmatismo)
+
+**Entrega esperada:**
+- Documentos de arquitectura claros para cada proyecto
+- Code reviews de decisiones arquitectónicas críticas
+- Roadmap técnico trimestral para la Agencia
+- Asesoría a Jarvis en escalabilidad y migraciones futuras
+
+---
+
+---
+
+## Skills del Equipo
+
+Skills propias creadas para cubrir gaps criticos que ningun repositorio de la comunidad cubre. Ubicadas en `.claude/skills/`.
+
+| Skill | Archivo | Agente principal | Que cubre |
+|-------|---------|-----------------|-----------|
+| **n8n Expert** | `n8n-expert.md` | Cinthya | Diseno de workflows, triggers, error handling, credenciales, deploy |
+| **Flutter Expert** | `flutter-expert.md` | Sasha, Brook | Clean Architecture, BLoC/Riverpod, Dart 3, testing, Supabase SDK |
+| **FastAPI Expert** | `fastapi-expert.md` | Sasha | APIs de produccion, Pydantic v2, JWT, OWASP, deploy en Railway/Render |
+| **Supabase Complete** | `supabase-complete.md` | Sasha, Brook | Auth, RLS avanzado, Realtime, Edge Functions, Storage, PostgreSQL |
+| **Claude Agent SDK** | `claude-agent-sdk.md` | Todos | Sub-agentes paralelos, routing haiku/sonnet/opus, orquestacion multi-agente |
+| **Web Builder** | `web-builder.md` | Brook, Erik | Landing pages con Next.js 15+, Tailwind 4, shadcn/ui, Framer Motion, deploy Vercel |
+| **WhatsApp AgentKit** | `whatsapp-agentkit.md` | Cinthya, Sasha | Agentes IA en WhatsApp en <30 min, Python, Anthropic API, Whapi/Meta/Twilio |
+| **Claude SEO** | `claude-seo.md` | Brook, Erik | 13 comandos SEO: auditoria tecnica, keywords, meta tags, reporte, autocorreccion |
+| **MCPs Superpoderes** | `mcps-superpoderes.md` | Todos | Supadata (video), Apify (scraping), Last 30 Days (noticias), Playwright (navegador) |
+
+**Como usar las skills:**
+Cada agente tiene acceso automatico a las skills del directorio `.claude/skills/`. El agente las consulta cuando trabaja en el dominio correspondiente.
+
+**Skills de la comunidad recomendadas (instalar desde repos externos):**
+- `software-architecture` — Clean Architecture, SOLID (ComposioHQ)
+- `subagent-driven-development` — Sub-agentes con checkpoints (ComposioHQ)
+- `test-driven-development` — TDD para features y bugfixes (ComposioHQ/Antigravity)
+- `security-auditor` — Code reviews de seguridad (Antigravity)
+- `postgres-best-practices` — Oficial de Supabase (VoltAgent)
+- `api-design-principles` — REST y GraphQL best practices (Antigravity)
+- `mcp-builder` — Crear servidores MCP (Anthropic oficial)
+
+---
+
 ## Convenciones de modelos
 
 | Modelo | Agentes | Cuándo usarlo |
 |--------|---------|--------------|
 | `haiku` | Sub-agentes simples | Extracción, clasificación, enrutamiento, tareas repetitivas |
-| `sonnet` | Jade, Brook, Erik, Cinthya | Investigación, redacción, frontend, diseño, automatización, código de features |
-| `opus` | Jarvis, Ego, Sasha | Decisiones estratégicas, auditorías, arquitectura, seguridad crítica |
+| `sonnet` | Jade, Brook, Erik, Cinthya, Yang | Investigación, redacción, frontend, diseño, automatización, código de features |
+| `opus` | Jarvis, Ego, Sasha, Leo | Decisiones estratégicas, auditorías, arquitectura, seguridad crítica, negociaciones comerciales de alto valor |
+
+**IMPORTANTE:** `budget_tokens` esta DEPRECADO en Opus 4.6 y Sonnet 4.6. Usar `max_tokens` unicamente.
 
 - Jade capacita a **todos** los agentes — es la fuente de conocimiento del equipo
 - Ego audita a **todos** los agentes y proyectos — reporta directamente a Juan Camilo

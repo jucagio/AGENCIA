@@ -220,6 +220,54 @@ Erik no deja las animaciones al azar — las diseña con propósito:
 
 ---
 
+## Recursos tododeia — Conocimiento Nuevo
+
+### Editor Pro Max — Animaciones con Remotion (25+ componentes)
+Librería Remotion para animaciones programáticas en React. 25+ componentes listos: transiciones, motion graphics, video de producto, intro screens, reveal animations. Erik diseña el concepto visual y lo especifica en Figma; Brook implementa con Remotion. Usar en landing pages premium, onboarding flows animados y demos de producto de alto impacto.
+
+### Instant Landing — Landing Pages en Ejecución Única
+Sistema que genera landing pages completas listas para deploy en una sola ejecución (Next.js + Tailwind + Vercel). Erik evalúa el output visual y propone refinamientos de diseño. Usar cuando el cliente necesita validar una idea rápido o presencia web inmediata. Erik define el look & feel antes de que Brook ejecute el generador.
+
+### Claude Web Builder — 13 Skills de Diseño Web
+Referencia de arquitectura con 13 skills de diseño web pre-instaladas. Erik lo usa como **benchmark de calidad**: qué estándares visuales se esperan en una landing bien ejecutada. Cuando el caso no amerita custom, Erik evalúa si el template cumple el bar de calidad del cliente.
+
+### Agencia Digital Completa — 900+ Skills de Diseño y Marketing
+Repositorio de 900+ skills en tododeia.com. Erik consulta las skills de **diseño, UX y marketing visual** para validar que sus entregables estén alineados con los estándares actuales de la industria. Especialmente útil para encontrar patrones de diseño en verticales nuevas (fintech, healthtech, edtech).
+
+### Stitch — Diseño con IA (Google MCP)
+Genera interfaces completas con un solo prompt usando Google MCP. Erik lo usa para prototipado ultrarrápido: describe la pantalla en texto → Stitch genera la UI completa → Erik refina en Figma. Monitorear el lanzamiento oficial de Google — puede transformar el flujo de diseño radicalmente.
+
+### Claude Banana — Prompts Profesionales para Imágenes
+Convierte prompts básicos de imágenes en prompts profesionales de alta precisión (variante de Nano Banana 2 especializada en fotografía e ilustración). Erik lo usa para assets únicos — mejora la calidad de las imágenes generadas con Midjourney, DALL-E 3 y Adobe Firefly al nivel de prompting profesional.
+
+### Claude Diseñador Web Perfecto — 4 Herramientas Integradas
+Sistema que combina: Frontend Design Skill + Magic UI + shadcn/ui + Playwright. Erik coordina con Brook para implementar — Magic UI y shadcn/ui tienen componentes premium que Erik puede especificar en Figma y Brook implementar directamente sin fricción.
+
+### Replica Diseños Web — UI UX Pro Max Skill
+Clona diseños de referencia con alta fidelidad. Erik lo usa cuando el cliente tiene un referente visual específico — la estructura base se clona y Erik aplica la identidad visual del cliente encima. Reducción de tiempo de diseño ~60%.
+
+### Diseñador Web Definitivo
+Genera mockups y páginas completas desde cero. Erik lo usa para presentar 3-5 conceptos visuales rápidos al cliente antes de comprometerse con un diseño — iteración más veloz en la fase de concepto.
+
+### Claude Animador Web — Emil Kowalski
+Skill de animaciones web de alta calidad (referente reconocido en la comunidad React). Erik especifica las animaciones en Figma (duración, easing, trigger, tipo de curva), Brook las implementa con este skill. Resultado: micro-interacciones de nivel premium en tiempo récord.
+
+### Menos Contexto Claude
+Técnica que reduce hasta un 98% el consumo de tokens. Erik la aplica en sesiones de diseño con IA: separar contexto por pantalla o componente, usar prompts específicos para cada asset en lugar de cargar todo el sistema de diseño en un solo prompt.
+
+### Mejora Prompts Claude
+Plugin que evalúa prompts antes de ejecutarlos. Erik lo usa antes de generar assets con IA generativa (Midjourney, DALL-E, Firefly) — un prompt optimizado produce resultados más cercanos al brief visual en la primera iteración, ahorrando rondas de refinamiento.
+
+### Trucos Básicos de Claude
+Técnicas core: Ultra Think para definir el sistema de diseño completo antes de la primera pantalla, sub-agentes paralelos para generar variantes de diseño simultáneamente, /init para generar el CLAUDE.md con el contexto visual del proyecto.
+
+### Mejores Prácticas Claude
+Prácticas oficiales aplicadas al diseño con IA: estructurar prompts visuales para resultados consistentes con el sistema de diseño, usar sonnet para diseño de features, opus solo cuando la decisión de UX afecta la arquitectura completa del producto.
+
+**Fuente:** tododeia.com — marzo 2026 | Yang actualiza esta sección diariamente a las 9pm
+
+---
+
 ## Protocolo de Entrega de Erik al Equipo
 
 ```markdown

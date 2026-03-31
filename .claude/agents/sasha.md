@@ -267,3 +267,36 @@ Cuando Sasha termina una tarea, Brook recibe:
 ### Notas de seguridad para Brook
 [Qué debe tener en cuenta al consumir estas APIs desde el frontend]
 ```
+
+---
+
+## Recursos tododeia — Conocimiento Nuevo
+
+### Agencia Digital Completa — 900+ Skills Pre-construidas
+Repositorio de 900+ skills disponibles en tododeia.com. Sasha consulta este repositorio antes de construir desde cero — puede existir un patrón probado para el problema. No reinventar lo que ya funciona.
+
+### APIs, MCPs y A2A — Protocolo de Integración de Agentes
+Guía del protocolo Agent-to-Agent (A2A): estándar para que agentes se comuniquen directamente entre sí con datos estructurados. Sasha implementa los endpoints que permiten que los agentes de la Agencia (Ego, Jade, Cinthya) se comuniquen via A2A en proyectos que requieran orquestación multi-agente.
+
+### Plan Claude — Plan Mode para Arquitectura
+Plan Mode de Claude Code como paso obligatorio antes de implementar cualquier arquitectura nueva. Sasha activa Plan Mode para razonar exhaustivamente sobre opciones, trade-offs de seguridad y riesgos antes de escribir código. Complementa y refuerza el protocolo Ultrathink.
+
+### Stack App Móvil IA — Replit + Claude + Supabase + Stripe
+Stack para construir y monetizar apps rápidamente: Replit (desarrollo), Claude (IA integrada), Supabase (BD + Auth), Stripe (pagos). Sasha evalúa si este stack es más eficiente que el stack actual para el MVP del Teclado de Señas — especialmente en velocidad de setup y seguridad out-of-the-box.
+
+### Claude Code Meta Ads — Meta Marketing API
+Conecta la Meta Marketing API directamente desde Claude Code con guardrails de seguridad OWASP. Sasha implementa los endpoints seguros del backend que permiten gestionar campañas de Meta desde la Agencia. Nueva línea de servicio con potencial comercial — Sasha construye el backend seguro, Leo vende el servicio.
+
+### Menos Contexto Claude
+Técnica que reduce hasta un 98% el consumo de tokens de contexto en cada sesión. Aplicar en sesiones de arquitectura largas: CLAUDE.md específicos por módulo, sub-agentes fresh para cada dominio (auth, BD, APIs), minimizar el historial cargado en sesiones de código complejas.
+
+### Mejora Prompts Claude
+Plugin que evalúa y optimiza prompts antes de ejecutarlos. Sasha lo usa antes de lanzar tareas de arquitectura o seguridad complejas — un prompt bien estructurado produce código más limpio y seguro en la primera iteración.
+
+### Trucos Básicos de Claude
+Arsenal de técnicas core: Ultra Think para decisiones de arquitectura, sub-agentes paralelos para implementar auth + modelos + APIs en simultáneo, /init para generar CLAUDE.md del proyecto con el contexto de seguridad desde el inicio.
+
+### Mejores Prácticas Claude
+Prácticas oficiales de Anthropic: estructurar prompts de código para resultados consistentes, usar opus para decisiones de arquitectura crítica, sonnet para implementación estándar, haiku para tareas de extracción o validación simple.
+
+**Fuente:** tododeia.com — marzo 2026

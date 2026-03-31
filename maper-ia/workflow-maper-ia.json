@@ -1,0 +1,1168 @@
+{
+  "name": "MAPER.IA — Asesor Comercial WhatsApp Business",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "sticky-rama1",
+      "name": "RAMA 1 — Verificacion Webhook Meta",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -400
+      ],
+      "color": 3,
+      "notes": "Meta hace un GET con hub.challenge cuando registras el webhook.\nEste flujo lo responde inmediatamente con el valor correcto.\nSolo ocurre una vez al activar la integracion."
+    },
+    {
+      "parameters": {},
+      "id": "sticky-rama2",
+      "name": "RAMA 2 — Mensajes Entrantes de Usuarios",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        100
+      ],
+      "color": 4,
+      "notes": "Flujo principal. Recibe mensajes POST de Meta.\nResponde 200 OK inmediato (Meta exige <20s).\nLuego procesa con IA, guarda en Supabase y envia respuesta al usuario.\nSi la respuesta contiene [ESCALAR] activa el flujo de escalamiento."
+    },
+    {
+      "parameters": {},
+      "id": "sticky-rama3",
+      "name": "RAMA 3 — Cron Follow-ups Pendientes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        1100
+      ],
+      "color": 5,
+      "notes": "Corre cada 30 minutos en horario comercial.\nConsulta follow-ups pendientes en Supabase.\nGenera mensajes personalizados con IA y los envia.\nMarca los follow-ups como completados."
+    },
+    {
+      "parameters": {},
+      "id": "sticky-credenciales",
+      "name": "CREDENCIALES REQUERIDAS",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -400
+      ],
+      "color": 7,
+      "notes": "Credenciales a configurar en Settings > Credentials:\n\n1. GEMINI: tipo 'Google Gemini(PaLM) Api' — nombre: Gemini MAPERSA\n2. SUPABASE: tipo 'Supabase' — nombre: Supabase MAPERSA\n   URL: https://lzhfyasnsxdacxkyhqpj.supabase.co\n   Service Role Key: <REDACTED_SUPABASE>\n3. META: tipo 'Header Auth' — nombre: Meta MAPERSA\n   Header: Authorization | Value: Bearer TU_WHATSAPP_ACCESS_TOKEN\n\nVariables de entorno (Railway):\n- WHATSAPP_PHONE_NUMBER_ID  (ID del numero 3107735189 en Meta)\n- WHATSAPP_BUSINESS_ACCOUNT_ID  (WABA ID en Meta)\n- WHATSAPP_ACCESS_TOKEN  (System User Token permanente)\n- META_VERIFY_TOKEN  (valor: maper_ia_whatsapp_mapersa_2026)"
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "maper-ia-whatsapp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-verificacion",
+      "name": "Webhook GET — Verificacion Meta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -300
+      ],
+      "webhookId": "maper-ia-whatsapp-get"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-hub-mode",
+              "leftValue": "={{ $json.query['hub.mode'] }}",
+              "rightValue": "subscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-hub-token",
+              "leftValue": "={{ $json.query['hub.verify_token'] }}",
+              "rightValue": "={{ $env.META_VERIFY_TOKEN }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-verificacion-meta",
+      "name": "IF — hub.mode subscribe y token valido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        300,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-hub-challenge",
+      "name": "Respond — Devuelve hub.challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Forbidden",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "respond-forbidden",
+      "name": "Respond — 403 Forbidden",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "maper-ia-whatsapp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-mensajes",
+      "name": "Webhook POST — Mensajes Entrantes",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        80,
+        220
+      ],
+      "webhookId": "maper-ia-whatsapp-post"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true }",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-200-ok",
+      "name": "Respond — 200 OK Inmediato a Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        300,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-sender-id",
+              "name": "sender_id",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].from }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-message-text",
+              "name": "message_text",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-timestamp",
+              "name": "timestamp",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-contact-name",
+              "name": "contact_name",
+              "value": "={{ $json.body.entry[0].changes[0].value.contacts[0].profile.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-extraer-datos",
+      "name": "Set — Extraer sender_id, message_text, timestamp",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-messages-array",
+              "leftValue": "={{ $json.body.entry[0].changes[0].value.messages }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "cond-message-exists",
+              "leftValue": "={{ $json.message_text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-mensaje-existe",
+      "name": "IF — message_text existe (filtrar delivery/read)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://lzhfyasnsxdacxkyhqpj.supabase.co/rest/v1/rpc/get_or_create_contact",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"p_sender_id\": \"{{ $json.sender_id }}\",\n  \"p_name\": \"{{ $('Set — Extraer sender_id, message_text, timestamp').item.json.contact_name }}\"\n}",
+        "options": {}
+      },
+      "id": "supabase-get-contact",
+      "name": "Supabase RPC — get_or_create_contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        220
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://lzhfyasnsxdacxkyhqpj.supabase.co/rest/v1/rpc/get_conversation_history",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"p_sender_id\": \"{{ $('Set — Extraer sender_id, message_text, timestamp').item.json.sender_id }}\",\n  \"p_limit\": 20\n}",
+        "options": {}
+      },
+      "id": "supabase-get-history",
+      "name": "Supabase RPC — get_conversation_history",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        380
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-sender-id-2",
+              "name": "sender_id",
+              "value": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.sender_id }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-message-2",
+              "name": "message_text",
+              "value": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.message_text }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-contact-name",
+              "name": "contact_name",
+              "value": "={{ $('Supabase RPC — get_or_create_contact').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-history",
+              "name": "conversation_history",
+              "value": "={{ JSON.stringify($('Supabase RPC — get_conversation_history').all().map(i => i.json)) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-preparar-contexto",
+      "name": "Set — Preparar contexto para IA",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "toolsAgent",
+        "promptType": "define",
+        "text": "={{ $json.message_text }}",
+        "systemMessage": "Eres MAPER.IA, asesor comercial de MAPERSA. Haces parte del equipo comercial y apoyas al asesor asignado a cada cuenta. No eres un bot, no eres un asistente virtual — eres un asesor comercial que trabaja por WhatsApp Business.\n\n## Personalidad\n\nHablas como un asesor comercial de Medellín: directo, profesional y cercano. Usas \"usted\" por defecto. Solo tuteas si el cliente tutea primero. Dices \"Don Carlos\", \"quedo pendiente\", \"le confirmo\", \"con mucho gusto\". Nunca dices \"soluciones integrales\", \"propuesta de valor\", \"sinergia\" ni cualquier frase de marketing genérica.\n\nTus mensajes son cortos: máximo 3-4 líneas. Si necesitas decir más, divide en varios mensajes. Respetas el tiempo del cliente — un jefe de mantenimiento no tiene tiempo para rodeos.\n\nSi no sabes algo, dices \"le confirmo con el ingeniero y le respondo\". Nunca inventas.\n\n## Qué sabes\n\nManejas con soltura las líneas de MAPERSA:\n\n- Codificación industrial: Videojet CIJ (tintas, sustratos como PET, vidrio, cartón, metal), TIJ, láser, TTO. Sabes cuándo recomendar cada tecnología según sustrato y aplicación.\n- Inspección: Detectores de metales Safeline y rayos X (Mettler Toledo), checkweighers. Sabes que alimentos y farmacéutica los exigen por INVIMA y FDA, y que retailers los piden.\n- Maquinaria: Lavadoras industriales, líneas de agua, equipos de llenado. MAPERSA fabrica estos equipos — no solo distribuye.\n- EPC y automatización: Proyectos llave en mano, tableros eléctricos, integración SCADA.\n- Servicios: Mantenimiento preventivo y correctivo, repuestos originales Videojet y Mettler Toledo, soporte en sitio y remoto, capacitación de operarios.\n\nTus clientes son plantas de producción: alimentos, bebidas, farmacéutica, cosmética, agua. Hablan de \"línea de producción\", \"parada de planta\", \"OEE\", \"lote\", \"trazabilidad\". Tú hablas su idioma.\n\n## Cuándo escalas — OBLIGATORIO\n\nCuando detectes cualquiera de estas situaciones, incluye al FINAL de tu respuesta el tag [ESCALAR: motivo] con el motivo específico:\n- Cliente quiere negociar precio o condiciones de pago\n- Pregunta técnica fuera de tu base de conocimiento\n- Queja o reclamo formal\n- Planta parada o urgencia\n- Cliente pide hablar con una persona\n- Oportunidad de cierre inminente (cliente dice \"sí, vamos\", \"listo\", etc.)\n- Proyecto EPC o automatización compleja\n\nEjemplo: \"Don Carlos, ya le informo al ingeniero para que lo contacte de inmediato. [ESCALAR: planta parada - urgencia máxima]\"\n\n## Lo que NUNCA haces\n\n- NUNCA das precios. Solo: \"le preparo la cotización formal\".\n- NUNCA inventas especificaciones técnicas.\n- NUNCA hablas mal de la competencia.\n- NUNCA cierras una venta. El asesor humano hace el cierre.\n- NUNCA compartes información confidencial.\n- NUNCA te identificas como IA, bot o asistente virtual.\n- NUNCA usas más de un emoji por mensaje.\n\n## Contexto del cliente\n\nNombre del contacto: {{ $json.contact_name }}\nID del remitente: {{ $json.sender_id }}\n\nHistorial de conversación reciente:\n{{ $json.conversation_history }}\n\n## Horario\n\nHorario comercial: lunes a viernes 7am-6pm, sábados 8am-12pm (hora Colombia).\nFuera de horario, confirmas que recibiste y dices que respondes el siguiente día hábil.",
+        "options": {
+          "maxIterations": 10
+        }
+      },
+      "id": "ai-agent-maper",
+      "name": "AI Agent — MAPER.IA",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "gemini-2.0-flash",
+        "options": {
+          "maxOutputTokens": 1024,
+          "temperature": 0.7
+        }
+      },
+      "id": "gemini-model",
+      "name": "Google Gemini — gemini-2.0-flash",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        500
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Gemini MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.sender_id }}",
+        "contextWindowLength": 20
+      },
+      "id": "memory-buffer",
+      "name": "Window Buffer Memory — por sender_id",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1180,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/save_message",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "p_sender_id",
+              "value": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.sender_id }}"
+            },
+            {
+              "name": "p_role",
+              "value": "user"
+            },
+            {
+              "name": "p_content",
+              "value": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.message_text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-save-user-msg",
+      "name": "Supabase RPC — save_message (usuario)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        220
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-ai-response",
+              "name": "ai_response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-sender-final",
+              "name": "sender_id",
+              "value": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.sender_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-capturar-respuesta",
+      "name": "Set — Capturar respuesta IA",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/save_message",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "p_sender_id",
+              "value": "={{ $json.sender_id }}"
+            },
+            {
+              "name": "p_role",
+              "value": "assistant"
+            },
+            {
+              "name": "p_content",
+              "value": "={{ $json.ai_response }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-save-assistant-msg",
+      "name": "Supabase RPC — save_message (asistente)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1620,
+        380
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Set — Capturar respuesta IA').item.json.sender_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $('Set — Capturar respuesta IA').item.json.ai_response.replace(/\\[ESCALAR[^\\]]*\\]/g, '').trim() }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "http-enviar-messenger",
+      "name": "HTTP — Enviar respuesta a WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-escalar",
+              "leftValue": "={{ $('Set — Capturar respuesta IA').item.json.ai_response }}",
+              "rightValue": "[ESCALAR",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-escalar",
+      "name": "IF — Respuesta contiene [ESCALAR]",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2060,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/create_escalation",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "p_sender_id",
+              "value": "={{ $('Set — Capturar respuesta IA').item.json.sender_id }}"
+            },
+            {
+              "name": "p_reason",
+              "value": "={{ $('Set — Capturar respuesta IA').item.json.ai_response.match(/\\[ESCALAR:\\s*([^\\]]+)\\]/i)?.[1] || 'Sin motivo especificado' }}"
+            },
+            {
+              "name": "p_conversation_snippet",
+              "value": "={{ $('Set — Extraer sender_id, message_text, timestamp').item.json.message_text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-create-escalation",
+      "name": "Supabase RPC — create_escalation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2280,
+        220
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0,30 7-17 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0,30 8-11 * * 6"
+            }
+          ]
+        }
+      },
+      "id": "schedule-followups",
+      "name": "Schedule — Cada 30min Horario Comercial",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/obtener_seguimientos_pendientes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "options": {}
+      },
+      "id": "supabase-get-followups",
+      "name": "Supabase RPC — obtener_seguimientos_pendientes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        1220
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-hay-followups",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-hay-followups",
+      "name": "IF — Hay follow-ups pendientes",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "follow_ups",
+        "options": {}
+      },
+      "id": "split-followups",
+      "name": "Split — Iterar por cada follow-up",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        740,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "toolsAgent",
+        "promptType": "define",
+        "text": "=Genera un mensaje de seguimiento comercial para este contexto:\n\nContacto: {{ $json.contact_name }}\nMotivo del seguimiento: {{ $json.reason }}\nPlantilla base: {{ $json.template }}\nDías desde último contacto: {{ $json.days_since_contact }}\n\nInstrucciones:\n- Máximo 3-4 líneas, tono colombiano directo\n- Referencia específica al motivo del seguimiento\n- No menciones precio\n- Termina con pregunta abierta que invite a responder\n- Solo texto, sin saludos largos",
+        "systemMessage": "Eres MAPER.IA, asesor comercial de MAPERSA. Generas mensajes cortos de seguimiento comercial para clientes que tienen cotizaciones pendientes o citas agendadas. Tono: colombiano, directo, profesional. Máximo 3-4 líneas.",
+        "options": {
+          "maxIterations": 3
+        }
+      },
+      "id": "ai-agent-followup",
+      "name": "AI Agent — Generar mensaje follow-up",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        960,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "gemini-2.0-flash",
+        "options": {
+          "maxOutputTokens": 512,
+          "temperature": 0.6
+        }
+      },
+      "id": "gemini-model-followup",
+      "name": "Google Gemini — Follow-up Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        960,
+        1320
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Gemini MAPERSA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Split — Iterar por cada follow-up').item.json.sender_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "http-enviar-followup",
+      "name": "HTTP — Enviar follow-up a WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/complete_follow_up",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "p_follow_up_id",
+              "value": "={{ $('Split — Iterar por cada follow-up').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-complete-followup",
+      "name": "Supabase RPC — complete_follow_up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        1140
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase MAPERSA"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook GET — Verificacion Meta": {
+      "main": [
+        [
+          {
+            "node": "IF — hub.mode subscribe y token valido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF — hub.mode subscribe y token valido": {
+      "main": [
+        [
+          {
+            "node": "Respond — Devuelve hub.challenge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond — 403 Forbidden",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook POST — Mensajes Entrantes": {
+      "main": [
+        [
+          {
+            "node": "Respond — 200 OK Inmediato a Meta",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set — Extraer sender_id, message_text, timestamp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set — Extraer sender_id, message_text, timestamp": {
+      "main": [
+        [
+          {
+            "node": "IF — message_text existe (filtrar delivery/read)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF — message_text existe (filtrar delivery/read)": {
+      "main": [
+        [
+          {
+            "node": "Supabase RPC — get_or_create_contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase RPC — get_conversation_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase RPC — get_or_create_contact": {
+      "main": [
+        [
+          {
+            "node": "Set — Preparar contexto para IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase RPC — get_conversation_history": {
+      "main": [
+        [
+          {
+            "node": "Set — Preparar contexto para IA",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set — Preparar contexto para IA": {
+      "main": [
+        [
+          {
+            "node": "AI Agent — MAPER.IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini — gemini-2.0-flash": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent — MAPER.IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory — por sender_id": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent — MAPER.IA",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent — MAPER.IA": {
+      "main": [
+        [
+          {
+            "node": "Set — Capturar respuesta IA",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase RPC — save_message (usuario)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set — Capturar respuesta IA": {
+      "main": [
+        [
+          {
+            "node": "Supabase RPC — save_message (asistente)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase RPC — save_message (asistente)": {
+      "main": [
+        [
+          {
+            "node": "HTTP — Enviar respuesta a WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP — Enviar respuesta a WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "IF — Respuesta contiene [ESCALAR]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF — Respuesta contiene [ESCALAR]": {
+      "main": [
+        [
+          {
+            "node": "Supabase RPC — create_escalation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule — Cada 30min Horario Comercial": {
+      "main": [
+        [
+          {
+            "node": "Supabase RPC — obtener_seguimientos_pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase RPC — obtener_seguimientos_pendientes": {
+      "main": [
+        [
+          {
+            "node": "IF — Hay follow-ups pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF — Hay follow-ups pendientes": {
+      "main": [
+        [
+          {
+            "node": "Split — Iterar por cada follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split — Iterar por cada follow-up": {
+      "main": [
+        [
+          {
+            "node": "AI Agent — Generar mensaje follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini — Follow-up Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent — Generar mensaje follow-up",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent — Generar mensaje follow-up": {
+      "main": [
+        [
+          {
+            "node": "HTTP — Enviar follow-up a WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP — Enviar follow-up a WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Supabase RPC — complete_follow_up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "",
+    "timezone": "America/Bogota"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2026-03-25T00:00:00.000Z",
+      "updatedAt": "2026-03-25T00:00:00.000Z",
+      "id": "maper-ia-tag",
+      "name": "MAPER.IA"
+    }
+  ],
+  "triggerCount": 3,
+  "updatedAt": "2026-03-25T00:00:00.000Z",
+  "versionId": "1.0.0"
+}

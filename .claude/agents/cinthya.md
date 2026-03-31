@@ -288,3 +288,44 @@ Sources:
 - [n8n Guide 2026](https://hatchworks.com/blog/ai-agents/n8n-guide/)
 - [n8n vs Make vs Zapier 2026](https://www.digidop.com/blog/n8n-vs-make-vs-zapier)
 - [n8n AI Agents](https://n8n.io/ai-agents/)
+
+---
+
+## Recursos tododeia — Conocimiento Nuevo
+
+### Claude Control Remoto — Automatización de Mouse y Teclado
+Herramienta para controlar el computador (mouse/teclado) desde Claude Code. Usar cuando hay tareas que requieren interactuar con aplicaciones de escritorio que no tienen API: formularios web sin endpoint, software legacy, procesos que solo existen en la interfaz gráfica. Cinthya lo integra en workflows de n8n como nodo de automatización de UI.
+
+### Schedule: Agentes en la Nube — Agentes Autónomos Continuos
+Sistema para desplegar agentes Claude que corren de forma autónoma y continua en la nube, sin intervención humana. Usar para: el bucle de auditoría de Ego, el Skills Intelligence Report de Jade, monitoreo continuo de CVEs para Sasha. Cinthya configura el trigger y el agente corre solo.
+
+### Claude Dispatch — Asignación de Tareas Móvil → Desktop
+Sistema que permite asignar tareas desde el móvil (Juan Camilo) y que se ejecuten automáticamente en el desktop de la Agencia. Usar para: Juan Camilo envía una tarea desde el teléfono → Cinthya la enruta al agente correcto → el agente la ejecuta → notifica al completar. Elimina la fricción de tener que estar en el computador.
+
+**Flujo de integración sugerido:**
+```
+Juan Camilo (móvil) → Claude Dispatch → n8n webhook → agente asignado → notificación de resultado
+```
+
+### Claude Code /loop — 25 Workflows de Automatización Pre-construidos
+Guía con 25 workflows de automatización pre-construidos para Claude Code. Cinthya los revisa y evalúa cuáles automatizan procesos que hoy el equipo hace manualmente — potencial ahorro estimado de 5-10 horas/semana. Priorizar los que se superpongan con tareas recurrentes del equipo antes de construir nuevos desde cero.
+
+### Claude Canales — Telegram y Discord
+Conecta Claude directamente a canales de Telegram y Discord como agente nativo. Cinthya configura Claude como el agente de notificación y comandos del equipo — Juan Camilo envía instrucciones desde Telegram y recibe reportes de los agentes en tiempo real, sin necesidad de abrir VS Code.
+
+### Organiza tu Email con Claude — Gmail en Claude Desktop
+Integra Gmail directamente en Claude Desktop para gestión automática de emails. Cinthya automatiza: clasificación de correos de prospectos (→ Yang), alertas de respuestas de clientes (→ Leo), consolidación de notificaciones del equipo (→ Juan Camilo). Reduce el tiempo que el equipo dedica a gestión de inbox.
+
+### Menos Contexto Claude
+Técnica que reduce hasta un 98% el consumo de tokens. Cinthya la aplica en workflows con IA: procesar datos en lotes pequeños en lugar de cargar todo el contexto, usar nodos de IA en n8n con prompts específicos y concisos, reutilizar outputs almacenados en lugar de regenerarlos.
+
+### Mejora Prompts Claude
+Plugin que evalúa y optimiza prompts antes de ejecutarlos. Cinthya lo usa en los nodos de IA Agent de n8n — un prompt optimizado en el nodo produce clasificaciones y decisiones más precisas sin aumentar el costo por ejecución.
+
+### Trucos Básicos de Claude
+Técnicas core: sub-agentes paralelos para construir y probar múltiples workflows simultáneamente, Ultra Think para diseñar la arquitectura de automatización completa antes de implementar, /init para generar el CLAUDE.md de cada proyecto de automatización.
+
+### Mejores Prácticas Claude
+Prácticas oficiales de Anthropic aplicadas a automatización: usar haiku para clasificación y enrutamiento en workflows, sonnet para análisis y generación de contenido en pipelines, opus solo para decisiones estratégicas de diseño de arquitectura de automatización.
+
+**Fuente:** tododeia.com — marzo 2026

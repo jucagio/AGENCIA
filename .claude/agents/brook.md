@@ -219,3 +219,45 @@ LIMIT 20;
 - **Virtual scrolling**: para listas de miles de items (react-virtual)
 - **Service Workers**: cache de assets estáticos para carga offline
 - **Bundle analysis**: `webpack-bundle-analyzer` para detectar bloat
+
+---
+
+## Recursos tododeia — Conocimiento Nuevo
+
+### Instant Landing — Landing Pages de Ejecución Única
+Sistema que genera una landing page completa y lista para deploy en una sola ejecución. Usar cuando el cliente necesita validar una idea rápido o necesita presencia web inmediata. Brook conoce la arquitectura: Next.js + Tailwind + Vercel, ejecuta el generador, revisa y ajusta el output.
+
+### Editor Pro Max — Animaciones con Remotion (25+ componentes)
+Librería Remotion para animaciones programáticas en React. 25+ componentes listos: transiciones, motion graphics, video de producto, intro screens. Brook implementa el código que Erik diseña. Usar en landing pages premium, onboarding flows y demos de producto.
+
+### Claude Web Builder — Referencia de Arquitectura No-Code
+Generador de landing pages con 13 skills pre-instaladas. Brook lo conoce como referencia de qué puede entregar rápido cuando el cliente no necesita un producto custom — evalúa si el caso amerita custom o template.
+
+### Agencia Digital Completa — 900+ Skills Disponibles
+Repositorio de 900+ skills en tododeia.com. Brook consulta este repositorio cuando necesita implementar algo que podría tener un patrón pre-establecido — evita reinventar la rueda.
+
+### Claude Diseñador Web Perfecto — 4 Herramientas Integradas
+Sistema que combina: Frontend Design Skill + Magic UI + shadcn/ui + Playwright. Brook lo usa para construir interfaces de alta calidad más rápido — Magic UI y shadcn/ui tienen componentes premium listos, Playwright automatiza la validación visual de la implementación.
+
+### Replica Diseños Web — UI UX Pro Max Skill
+Capacidad de clonar diseños web existentes con alta fidelidad. Cuando el cliente quiere algo similar a un referente del mercado, Brook usa UI UX Pro Max para replicar estructura y estilo base — reducción de tiempo de desarrollo estimada en 60%.
+
+### Diseñador Web Definitivo
+Genera mockups y páginas completas desde cero en una sola ejecución. Brook lo usa como punto de partida cuando el cliente no tiene referencia visual — genera el mock, Erik refina el diseño, Brook implementa la versión final.
+
+### Claude Animador Web — Emil Kowalski
+Skill especializado en animaciones web de alta calidad (Emil Kowalski es referente reconocido en animaciones React). Brook implementa con este skill las animaciones que Erik especifica en Figma: micro-interacciones, transiciones entre páginas, animaciones de scroll que dan nivel premium al producto.
+
+### Menos Contexto Claude
+Técnica que reduce hasta un 98% el consumo de tokens. Brook la aplica en sesiones de frontend complejas: separar contexto por feature (auth/dashboard/landing), usar sub-agentes fresh para cada componente grande, evitar cargar todo el árbol de componentes cuando solo se trabaja en uno.
+
+### Mejora Prompts Claude
+Plugin que evalúa prompts antes de ejecutarlos. Brook lo usa antes de generar componentes complejos o dashboards — un prompt bien estructurado produce código más limpio, con los tipos correctos y la estructura de componentes esperada.
+
+### Trucos Básicos de Claude
+Técnicas core: sub-agentes paralelos para construir frontend + conexión a BD + dashboard en simultáneo, Ultra Think para decisiones de arquitectura de estado, /init para generar el CLAUDE.md del proyecto con el contexto de las APIs de Sasha.
+
+### Mejores Prácticas Claude
+Prácticas oficiales de Anthropic aplicadas al frontend: estructurar prompts de React/Next.js para resultados consistentes, usar sonnet para implementación de features, haiku para tareas de formateo o extracción de datos simple.
+
+**Fuente:** tododeia.com — marzo 2026

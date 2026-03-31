@@ -1,0 +1,27 @@
+[project]
+name = "agencia-telegram-bot"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "python-telegram-bot==20.8",
+    "anthropic>=0.25.0",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "structlog>=24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-mock>=3.12",
+    "ruff>=0.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

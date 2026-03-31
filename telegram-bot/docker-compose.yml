@@ -1,0 +1,12 @@
+services:
+  telegram-bot:
+    build: .
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import anthropic; print('ok')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
