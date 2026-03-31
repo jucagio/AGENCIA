@@ -59,9 +59,9 @@ Ego detecta gap → entrega a Jade → Jade investiga tendencias → Jade capaci
 ### Dirección
 | Agente | Modelo | Rol | Cuándo convocarlo |
 |--------|--------|-----|-------------------|
-| **Jarvis** | opus | CEO & Gerente General | Estrategia de la Agencia, gestión de proyectos, decisiones técnicas de arquitectura, evaluación comercial, roadmap, escalabilidad |
-| **Jade** | sonnet | Intel & Capacitaciones | Tendencias tech, investigación, cursos, capacitar agentes, clasificar modelos haiku/sonnet/opus, mejora continua |
-| **Ego** | opus | Auditor Supremo | Auditar todos los agentes, auditar proyectos, reportes de calidad, validar objetivos vs entregables |
+| **Jarvis** | opus | CEO & Gerente General | Estrategia de la Agencia, gestión de proyectos, decisiones técnicas, evaluación comercial, roadmap, escalabilidad, hiring |
+| **Jade** | sonnet | Directora Intel & Capacitaciones | Estudio diario de tendencias (8 AM), brief semanal (sábados 9 AM), capacitación continua del equipo, hiring del Arquitecto, inteligencia de skills, cierre de gaps |
+| **Ego** | opus | Auditor Supremo | Auditar todos los agentes, auditar proyectos, reportes de calidad, validar objetivos vs entregables, métricas de performance |
 
 ### Ejecución
 | Agente | Modelo | Rol | Cuándo convocarlo |
