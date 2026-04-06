@@ -50,6 +50,9 @@ yarn-error.log
 .claude/agent-logs/
 .claude/api-logs/
 
+# Claude Code Settings (local, con credenciales)
+.claude/settings.local.json
+
 # Docker
 postgres-data/
 redis-data/
