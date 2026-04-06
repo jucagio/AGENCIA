@@ -1,0 +1,170 @@
+{
+  "agents": {
+    "jarvis": {
+      "role": "CEO & Orchestrator",
+      "model": "opus",
+      "max_tokens": 8000,
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "2 cores",
+        "memory": "2GB"
+      },
+      "subordinates": [
+        "sasha",
+        "brook",
+        "erik",
+        "cinthya",
+        "jade",
+        "alejo",
+        "ego",
+        "leo",
+        "yang"
+      ],
+      "capabilities": [
+        "execute_plan",
+        "manage_resources",
+        "audit_decisions"
+      ]
+    },
+    "sasha": {
+      "role": "Backend & Security",
+      "model": "opus",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "1.5GB"
+      },
+      "capabilities": [
+        "code_backend",
+        "security_audit",
+        "api_design"
+      ]
+    },
+    "brook": {
+      "role": "Frontend & BD",
+      "model": "sonnet",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "1GB"
+      },
+      "capabilities": [
+        "code_frontend",
+        "db_design",
+        "dashboard"
+      ]
+    },
+    "erik": {
+      "role": "Design",
+      "model": "sonnet",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "0.5 core",
+        "memory": "512MB"
+      },
+      "capabilities": [
+        "ui_design",
+        "ux_research",
+        "design_system"
+      ]
+    },
+    "cinthya": {
+      "role": "Automation",
+      "model": "sonnet",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "0.5 core",
+        "memory": "512MB"
+      },
+      "capabilities": [
+        "create_workflows",
+        "automate_tasks"
+      ]
+    },
+    "jade": {
+      "role": "Intel & Capacitaciones",
+      "model": "sonnet",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "1GB"
+      },
+      "capabilities": [
+        "research_trends",
+        "capacitate_team"
+      ]
+    },
+    "alejo": {
+      "role": "Solutions Architect",
+      "model": "opus",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "1GB"
+      },
+      "capabilities": [
+        "design_architecture",
+        "optimize_cost",
+        "audit_decisions"
+      ]
+    },
+    "ego": {
+      "role": "Auditor",
+      "model": "opus",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "1GB"
+      },
+      "capabilities": [
+        "audit_agents",
+        "audit_projects",
+        "generate_reports"
+      ]
+    },
+    "leo": {
+      "role": "Sales Agent",
+      "model": "opus",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "1GB"
+      },
+      "capabilities": [
+        "structure_deals",
+        "close_sales"
+      ]
+    },
+    "yang": {
+      "role": "Commercial Intel",
+      "model": "sonnet",
+      "concurrent_limit": 1,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "512MB"
+      },
+      "capabilities": [
+        "research_companies",
+        "competitive_intel"
+      ]
+    },
+    "prospect": {
+      "role": "Prospecting Agent",
+      "model": "sonnet",
+      "concurrent_limit": 2,
+      "resources": {
+        "cpu": "1 core",
+        "memory": "512MB"
+      },
+      "capabilities": [
+        "research_prospect",
+        "generate_outreach"
+      ]
+    }
+  },
+  "concurrency": {
+    "max_parallel": 3,
+    "queue_size": 10,
+    "timeout_seconds": 600
+  }
+}
