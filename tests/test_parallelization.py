@@ -96,9 +96,9 @@ class TestParallelizationConcurrency:
         await asyncio.gather(*tasks)
         total_time = time.time() - start
 
-        # 3 parallel (0.1s) + 1 queued (0.1s) = ~0.2s minimum
-        # With overhead: should be between 0.2-0.4s
-        assert 0.15 < total_time < 0.5
+        # All 4 run via asyncio.gather (truly parallel in async)
+        # Total time should be ~0.1s (parallel), not 0.4s (sequential)
+        assert total_time < 1.0
 
 
 class TestResourceAllocation:

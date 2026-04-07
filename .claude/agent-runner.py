@@ -22,12 +22,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from api.config import settings
 
+# Force UTF-8 output on Windows
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 # Logging setup
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(),
+        logging.StreamHandler(sys.stdout),
         logging.FileHandler(f"{settings.agent_logs_path}/agent-runner.log")
     ]
 )
@@ -65,7 +70,7 @@ class AgentRunner:
         self.agent_state_path.mkdir(parents=True, exist_ok=True)
         self.agent_logs_path.mkdir(parents=True, exist_ok=True)
 
-        logger.info(f"✅ AgentRunner initialized (max_parallel: {self.max_parallel})")
+        logger.info(f"[OK] AgentRunner initialized (max_parallel: {self.max_parallel})")
 
     def _load_agents_config(self) -> Dict[str, Any]:
         """Load agents configuration from JSON."""
@@ -73,7 +78,7 @@ class AgentRunner:
             with open(self.agents_config_path, "r") as f:
                 return json.load(f)
         except FileNotFoundError:
-            logger.error(f"❌ agents.json not found at {self.agents_config_path}")
+            logger.error(f"[ERROR] agents.json not found at {self.agents_config_path}")
             return {"agents": {}, "concurrency": {"max_parallel": 3}}
 
     def get_agent_config(self, agent_name: str) -> Optional[Dict[str, Any]]:
@@ -147,7 +152,7 @@ class AgentRunner:
                 "started_at": start_time.isoformat(),
             })
 
-            logger.info(f"▶️  Executing {agent_name}...")
+            logger.info(f"[RUN]  Executing {agent_name}...")
 
             # === INTEGRATION POINT: Claude API ===
             # When CLAUDE_API_KEY is available in .env:
@@ -165,12 +170,12 @@ class AgentRunner:
             # PLACEHOLDER: Simulated response
             result.status = "success"
             result.output = f"[PLACEHOLDER] {agent_name} would execute with: {prompt[:100]}...\n\nNote: Connect CLAUDE_API_KEY in .env to enable real execution."
-            logger.info(f"✅ {agent_name} completed (placeholder mode)")
+            logger.info(f"[OK] {agent_name} completed (placeholder mode)")
 
         except Exception as e:
             result.status = "error"
             result.error = str(e)
-            logger.error(f"❌ {agent_name} failed: {e}")
+            logger.error(f"[ERROR] {agent_name} failed: {e}")
 
         finally:
             # Calculate duration
@@ -212,12 +217,12 @@ class AgentRunner:
         # Validate inputs
         if len(agent_names) > max_parallel:
             logger.warning(
-                f"⚠️  Requested {len(agent_names)} agents, but max_parallel is {max_parallel}. "
+                f"[WARN] Requested {len(agent_names)} agents, but max_parallel is {max_parallel}. "
                 f"Executing {max_parallel} first."
             )
             agent_names = agent_names[:max_parallel]
 
-        logger.info(f"🚀 Starting {len(agent_names)} agents in parallel (max_parallel: {max_parallel})")
+        logger.info(f"[START] Starting {len(agent_names)} agents in parallel (max_parallel: {max_parallel})")
 
         tasks = [
             self.execute_agent(agent_name, prompts.get(agent_name, ""))
@@ -257,14 +262,14 @@ async def main():
 
     if args.list:
         agents = runner.list_agents()
-        logger.info(f"📋 Configured agents ({len(agents)}):")
+        logger.info(f"[LIST] Configured agents ({len(agents)}):")
         for agent in agents:
             config = runner.get_agent_config(agent)
             logger.info(f"   - {agent}: {config['role']} ({config['model']})")
 
     elif args.state:
         state = runner.read_agent_state(args.state)
-        logger.info(f"📊 State for {args.state}:\n{json.dumps(state, indent=2)}")
+        logger.info(f"[STATUS] State for {args.state}:\n{json.dumps(state, indent=2)}")
 
     elif args.execute:
         agent_names = [a.strip() for a in args.execute.split(",")]
@@ -277,7 +282,7 @@ async def main():
             max_parallel=args.parallel,
         )
 
-        logger.info("\n📊 Execution Results:")
+        logger.info("\n[STATUS] Execution Results:")
         for agent_name, result in results.items():
             logger.info(f"\n{agent_name}:")
             logger.info(f"  Status: {result.status}")
@@ -289,7 +294,7 @@ async def main():
         logger.info("Use --help for usage information")
         runner_instance = AgentRunner()
         states = runner_instance.get_all_states()
-        logger.info(f"✅ Agent Runner ready. {len(states)} agents available.")
+        logger.info(f"[OK] Agent Runner ready. {len(states)} agents available.")
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 import json
 import os
 from datetime import datetime, timedelta
@@ -179,8 +179,11 @@ def read_agent_state(agent_name: str) -> dict:
     """Read agent state from vault."""
     state_file = get_agent_state_path(agent_name)
     if state_file.exists():
-        with open(state_file, "r") as f:
-            return json.load(f)
+        try:
+            with open(state_file, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, ValueError):
+            return {"status": "idle", "last_updated": None}
     return {"status": "idle", "last_updated": None}
 
 
