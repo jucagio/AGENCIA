@@ -1,0 +1,59 @@
+# =============================================================================
+# Asesor de Imagen AI — Backend dependencies
+# Verified versions: April 2026 (web search confirmed latest stable)
+# =============================================================================
+
+# --- Web framework ---------------------------------------------------------
+fastapi==0.136.0                # Latest stable (2026-04-23). Requires pydantic>=2.9
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12        # multipart/form-data for file uploads
+
+# --- Validation & settings -------------------------------------------------
+pydantic==2.10.3
+pydantic-settings==2.6.1
+email-validator==2.2.0          # for EmailStr in schemas
+
+# --- Auth (legacy custom JWT — to be removed in Entrega 0.2 per ADR-001) ---
+bcrypt==4.2.1
+python-jose[cryptography]==3.3.0
+# Forward-compat for ADR-001 Supabase JWKS validation (ES256):
+PyJWT[crypto]==2.10.1
+
+# --- Supabase --------------------------------------------------------------
+# Decisión Sprint 0.1: usar postgrest directamente para evitar el dependency hell
+# de `supabase` con `pyiceberg` que rompe en Windows.
+postgrest==0.16.6
+
+# --- Async worker (ADR-002) ------------------------------------------------
+arq==0.28.0                     # async Redis task queue (maintenance mode but production-stable)
+redis==5.2.1
+# Idempotency-Key store (ADR-003) reuses Redis above.
+
+# --- Storage (ADR-005: Supabase Storage primary, Cloudflare R2 CDN) -------
+boto3==1.35.84                  # R2 is S3-compatible
+Pillow==11.0.0                  # image processing (resize, EXIF strip)
+
+# --- HTTP client (used by JWKS fetcher, Replicate, etc.) ------------------
+httpx==0.28.1
+
+# --- External AI APIs ------------------------------------------------------
+google-cloud-vision==3.8.1
+replicate==1.0.4
+anthropic==0.40.0
+
+# --- Payments --------------------------------------------------------------
+stripe==11.4.1
+
+# --- Observability ---------------------------------------------------------
+python-json-logger==2.0.7
+
+# --- Testing ---------------------------------------------------------------
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+pytest-env==1.1.5
+respx==0.21.1                   # mock httpx (for JWKS / Replicate tests)
+
+# --- Dev tooling -----------------------------------------------------------
+ruff==0.8.4                     # replaces black + isort + flake8
+mypy==1.13.0
