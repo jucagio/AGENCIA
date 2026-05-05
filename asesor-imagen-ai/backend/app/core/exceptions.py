@@ -72,6 +72,17 @@ class AuthorizationError(AppException):
         )
 
 
+class PermissionDeniedError(AppException):
+    """Raised when code tries to bypass the AdminClient guard."""
+
+    def __init__(self, message: str = "Permission denied"):
+        super().__init__(
+            message=message,
+            code="PERMISSION_DENIED",
+            status_code=status.HTTP_403_FORBIDDEN,
+        )
+
+
 class RateLimitError(AppException):
     def __init__(self):
         super().__init__(
