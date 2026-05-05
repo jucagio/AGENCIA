@@ -49,8 +49,11 @@ async def create_admin_client(settings: Settings | None = None) -> "AsyncPostgre
       - ARQ background workers (try-on processing, R2 replication).
       - Audit log writes that bypass RLS.
 
+    WARNING: This client completely bypasses Row Level Security (RLS).
     NEVER expose this client's responses directly to end users — always
     re-check ownership at the application layer.
+
+    TODO: 🚧 SPRINT_0_2: implementar AdminClient wrapper con .with_user_check() guards
 
     Raises:
         SupabaseClientError: if SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing.

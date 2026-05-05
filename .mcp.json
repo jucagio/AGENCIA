@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "higgsfield": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "higgsfield-mcp"
+      ],
+      "env": {
+        "HIGGSFIELD_API_KEY_ID": "${HIGGSFIELD_API_KEY_ID}",
+        "HIGGSFIELD_API_KEY_SECRET": "${HIGGSFIELD_API_KEY_SECRET}"
+      }
+    }
+  }
+}

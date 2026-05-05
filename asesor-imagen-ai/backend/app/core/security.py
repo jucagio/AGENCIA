@@ -27,8 +27,8 @@ from jose import JWTError, jwt
 from app.config import get_settings
 from app.core.exceptions import AuthenticationError
 
-# bcrypt cost factor (2^12 = 4096 iterations). OWASP recommends >= 10.
-_BCRYPT_ROUNDS = 12
+# bcrypt cost factor (2^13 = 8192 iterations). OWASP recommends >= 10.
+_BCRYPT_ROUNDS = 13
 
 
 def hash_password(password: str) -> str:

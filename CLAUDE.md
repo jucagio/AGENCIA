@@ -5,6 +5,19 @@
 ALWAYS before making any change: search the web for the newest documentation.
 Only implement if you are 100% sure it will work.
 
+## Canal ASTECIA ↔ Jarvis (REVISAR AL INICIO DE SESIÓN)
+
+ASTECIA es la asesora comercial personal de Juan Camilo que corre 24/7 en Haiku vía OpenClaw + WhatsApp. Cuando encuentra consultas que exceden su scope táctico (estrategia profunda, arquitectura, decisiones >$200M, técnicas), **escribe a `.astecia-inbox/`** esperando respuesta de Jarvis.
+
+**Jarvis (yo), al iniciar cualquier sesión de Claude Code en este repo, DEBO:**
+
+1. Revisar `ls -lt .astecia-inbox/` — si hay `.md` nuevos (distintos a README.md), leerlos
+2. Responder con Ultrathink en `.jarvis-inbox/<mismo-nombre>.md` usando el template de `.astecia-inbox/README.md`
+3. Archivar la consulta original en `.astecia-inbox/archive/<YYYY-MM>/`
+4. Notificar a Juan Camilo por WhatsApp (o pedirle que active a ASTECIA para que lea la respuesta)
+
+**Ver:** `.astecia-inbox/README.md` y `.jarvis-inbox/README.md` para el protocolo completo.
+
 ---
 
 ## Organigrama
@@ -21,6 +34,13 @@ Only implement if you are 100% sure it will work.
      |       |       |        |        |        |        |       |
    EGO    Sub-     Sub-    Sub-     Sub-      Sub-    Sub-    Sub-
  (Audit) agentes  agentes agentes  agentes  agentes agentes agentes
+  |
+  CYBER NEO
+  (Seguridad Técnica)
+     |
+   Sub-agentes
+   (5 paralelos)
+     
      |_______|_______|________|________|________|________|_______|
                 TODOS reportan a Jarvis (CEO)
 
@@ -38,7 +58,8 @@ Only implement if you are 100% sure it will work.
 - **Cinthya** → automatiza procesos repetitivos con n8n, Make, workflows IA. Colabora con Jade. Reporta a Jarvis.
 - **Leo** → agente comercial senior. Analiza propuestas, estructura deals, cierra contratos. Alimentado por Yang. Reporta a Jarvis.
 - **Yang** → investigadora de inteligencia comercial. Investiga empresas, clientes, mercado. Alimenta a Leo. Reporta a Jarvis.
-- **Ego** → audita a todos los agentes y proyectos. Entrega gaps a Jade para capacitar. Reporta a Jarvis.
+- **Ego** → audita a todos los agentes y proyectos. Entrega gaps a Jade para capacitar. Supervisa a Cyber Neo. Reporta a Jarvis.
+- **Cyber Neo** → auditoría de seguridad técnica especializada. Despliega 5 sub-agentes para analizar 11 dominios OWASP. Reporta a Ego. Bloquea releases inseguras.
 
 **Flujo comercial:**
 ```
@@ -62,6 +83,11 @@ Ego detecta gap → entrega a Jade → Jade investiga tendencias → Jade capaci
 | **Jarvis** | opus | CEO & Gerente General | Estrategia de la Agencia, gestión de proyectos, decisiones técnicas, evaluación comercial, roadmap, escalabilidad, hiring |
 | **Jade** | sonnet | Directora Intel & Capacitaciones | Estudio diario de tendencias (8 AM), brief semanal (sábados 9 AM), capacitación continua del equipo, hiring del Arquitecto, inteligencia de skills, cierre de gaps |
 | **Ego** | opus | Auditor Supremo | Auditar todos los agentes, auditar proyectos, reportes de calidad, validar objetivos vs entregables, métricas de performance |
+
+### Seguridad
+| Agente | Modelo | Rol | Cuándo convocarlo |
+|--------|--------|-----|-------------------|
+| **Cyber Neo** | opus | Auditor de Seguridad Técnica | Auditoría de código (SAST), detección de secretos, análisis de vulnerabilidades de dependencias (SCA), escaneo DAST, auditoría container, compliance OWASP 2025, bloqueo de releases inseguras | |
 
 ### Ejecución
 | Agente | Modelo | Rol | Cuándo convocarlo |
@@ -97,9 +123,13 @@ Ego detecta gap → entrega a Jade → Jade investiga tendencias → Jade capaci
       ↓
 6. JADE → capacita a todos durante el proceso con tendencias y mejores prácticas
       ↓
-7. EGO → audita el progreso, entrega reportes a Juan Camilo
+7. CYBER NEO → auditoría de seguridad técnica (OWASP 2025, 11 dominios, bloquea releases inseguras)
       ↓
-8. ALEJO → audita decisiones arquitectónicas, optimiza costo, escalabilidad
+8. EGO → audita el progreso, valida fixes de seguridad, entrega reportes a Juan Camilo
+      ↓
+9. ALEJO → audita decisiones arquitectónicas, optimiza costo, escalabilidad
+      ↓
+[PRODUCCIÓN] ← Aprobación de todos antes de release
 ```
 
 ---
@@ -117,6 +147,12 @@ En Claude Code (VS Code), usa `@nombre-agente`:
 @jade Clasifica estas tareas entre haiku, sonnet y opus.
 @ego Audita el avance del proyecto Teclado de Señas. Ultrathink
 @ego Audita el desempeño de Sasha esta semana.
+
+# Seguridad técnica
+@cyber-neo Audita el código de Data Reporting Agents antes de release. Modo paralelo, 5 sub-agentes.
+@cyber-neo Escanea vulnerabilidades en dependencias npm. Reporte con CVSS scores.
+@cyber-neo Detecta secretos en el repositorio (API keys, tokens, passwords).
+@cyber-neo Valida que los fixes de Sasha remediaron todas las vulnerabilidades CRITICAL.
 
 # Ejecución
 @alejo Diseña la arquitectura del proyecto [nombre]. ¿Escala a 10x/100x? Ultrathink
@@ -280,7 +316,8 @@ Paperclip será la plataforma principal para escalar la Agencia desde equipo de 
 
 ## Proyectos activos
 
-- **Teclado de Señas** — App para personas sordomudas (en evaluación)
+- **Teclado de Señas** — App para personas sordomudas (MVP completado, testing Android validado)
+- **Data Reporting Agents** — SaaS: upload datos + analisis IA + dashboards + reportes (MVP sem 2-8 Q2 2026, target $300-480k ARR)
 
 ---
 
@@ -332,6 +369,11 @@ Skills propias creadas para cubrir gaps criticos que ningun repositorio de la co
 | **WhatsApp AgentKit** | `whatsapp-agentkit.md` | Cinthya, Sasha | Agentes IA en WhatsApp en <30 min, Python, Anthropic API, Whapi/Meta/Twilio |
 | **Claude SEO** | `claude-seo.md` | Brook, Erik | 13 comandos SEO: auditoria tecnica, keywords, meta tags, reporte, autocorreccion |
 | **MCPs Superpoderes** | `mcps-superpoderes.md` | Todos | Supadata (video), Apify (scraping), Last 30 Days (noticias), Playwright (navegador) |
+| **Stitch MCP** | `stitch-mcp.md` | Erik, Brook | Google Stitch design-to-code via MCP, DESIGN.md export, Figma killer, CI/CD design sync |
+| **Design-to-Code Generator** | `design-to-code-generator.md` | Erik, Sasha | Screenshot/URL a React+Tailwind, Firecrawl, Claude Vision, Open Lovable |
+| **Computer Use Basics** | `computer-use-basics.md` | Sasha, Alejo | Claude Computer Use API beta, RPA, desktop automation, Docker sandbox |
+| **Data Reporting Agent** | `data-reporting-agent.md` | Sasha, Brook, Cinthya | MVP SaaS: upload datos, analisis IA, dashboards, reportes email, chat Q&A |
+| **n8n Advanced** | `n8n-advanced.md` | Cinthya, Sasha | AI Agent nodes, RAG pipelines, data ETL, circuit breaker, DLQ, scheduled reports |
 
 **Como usar las skills:**
 Cada agente tiene acceso automatico a las skills del directorio `.claude/skills/`. El agente las consulta cuando trabaja en el dominio correspondiente.

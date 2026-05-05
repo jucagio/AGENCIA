@@ -3,7 +3,34 @@ name = "asesor-imagen-ai"
 version = "0.1.0"
 description = "AI-powered fashion and image advisor backend"
 requires-python = ">=3.10"
-
+dependencies = [
+    "fastapi==0.136.0",
+    "uvicorn[standard]==0.32.0",
+    "python-multipart==0.0.12",
+    "pydantic==2.10.3",
+    "pydantic-settings==2.6.1",
+    "email-validator==2.2.0",
+    "bcrypt==4.2.1",
+    "PyJWT[crypto]==2.10.1",
+    "postgrest==0.16.6",
+    "arq==0.28.0",
+    "redis==5.2.1",
+    "boto3==1.35.84",
+    "Pillow==11.0.0",
+    "httpx==0.28.1",
+    "google-cloud-vision==3.8.1",
+    "replicate==1.0.4",
+    "anthropic==0.40.0",
+    "stripe==11.4.1",
+    "python-json-logger==2.0.7",
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "pytest-cov==6.0.0",
+    "pytest-env==1.1.5",
+    "respx==0.21.1",
+    "ruff==0.8.4",
+    "mypy==1.13.0"
+]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"

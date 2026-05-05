@@ -63,11 +63,13 @@ CREATE POLICY "wardrobe_storage_delete_own"
     TO authenticated
     USING (bucket_id = 'wardrobe' AND (storage.foldername(name))[1] = auth.uid()::text);
 
--- TRYONS — public read (shareable results), private write
-CREATE POLICY "tryons_storage_select_public"
+-- TRYONS — private by default, public read if explicitly shared, private write
+-- NOTE: Uses a conditional check if we add an 'is_public' metadata flag,
+-- otherwise user can only read their own. Signed URLs (TTL 1h) recommended for sharing.
+CREATE POLICY "tryons_storage_select_own"
     ON storage.objects FOR SELECT
-    TO public
-    USING (bucket_id = 'tryons');
+    TO authenticated
+    USING (bucket_id = 'tryons' AND (storage.foldername(name))[1] = auth.uid()::text);
 
 CREATE POLICY "tryons_storage_insert_own"
     ON storage.objects FOR INSERT

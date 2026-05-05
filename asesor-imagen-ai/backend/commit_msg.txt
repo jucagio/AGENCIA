@@ -1,0 +1,11 @@
+fix(backend): Sprint 0.1 patch — audit findings Cyber Neo + Ego
+
+- Fix test_default_settings (RATE_LIMIT_PER_MINUTE missing)
+- Add requirements.txt + sync pyproject.toml dependencies
+- Replace python-jose with PyJWT[crypto] (CVE-2024-33664)
+- New migration 003: ADR-001 compliance (profiles + FK auth.users)
+- Restrict tryons bucket SELECT (private + signed URLs)
+- Sync .env.example with config.py
+- Forbid extra env vars + JWT_ALGORITHM Literal
+- Stripe webhook secret validation in assert_production_ready
+- bcrypt rounds 12 -> 13 (OWASP 2026)

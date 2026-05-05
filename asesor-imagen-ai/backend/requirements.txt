@@ -15,7 +15,7 @@ email-validator==2.2.0          # for EmailStr in schemas
 
 # --- Auth (legacy custom JWT — to be removed in Entrega 0.2 per ADR-001) ---
 bcrypt==4.2.1
-python-jose[cryptography]==3.3.0
+# python-jose removed in favor of PyJWT[crypto] due to CVE-2024-33664
 # Forward-compat for ADR-001 Supabase JWKS validation (ES256):
 PyJWT[crypto]==2.10.1
 

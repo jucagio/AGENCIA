@@ -1,0 +1,393 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$metadata": {
+    "project": "Asesor de Imagen AI",
+    "version": "1.0.0",
+    "author": "Erik — Diseñador Senior, Agencia",
+    "date": "2026-04-25",
+    "target": "Flutter mobile (375x812 base, dark+light mode, WCAG AA)"
+  },
+
+  "color": {
+    "brand": {
+      "blush": {
+        "$value": "#E8A598",
+        "$type": "color",
+        "$description": "Tono terracota suave. Color primario. Cálido, empoderador, femenino sin ser estereotipado."
+      },
+      "plum": {
+        "$value": "#6B3FA0",
+        "$type": "color",
+        "$description": "Morado profundo. Secundario. Lujo accesible, sabiduría de la IA."
+      },
+      "sand": {
+        "$value": "#F5EDE4",
+        "$type": "color",
+        "$description": "Arena cálida. Fondo light mode. Nunca blanco puro — evita frialdad clínica."
+      },
+      "charcoal": {
+        "$value": "#1C1A20",
+        "$type": "color",
+        "$description": "Casi negro con tinte violeta. Fondo dark mode. Más rico que negro puro."
+      },
+      "cream": {
+        "$value": "#FAF6F1",
+        "$type": "color",
+        "$description": "Crema suave para cards en light mode."
+      }
+    },
+
+    "primary": {
+      "50":  { "$value": "#FDF4F2", "$type": "color" },
+      "100": { "$value": "#FAEAE6", "$type": "color" },
+      "200": { "$value": "#F4CFC8", "$type": "color" },
+      "300": { "$value": "#ECADA1", "$type": "color" },
+      "400": { "$value": "#E8A598", "$type": "color" },
+      "500": { "$value": "#D97B6A", "$type": "color", "$description": "Primary default — uso principal en botones, CTAs, accents" },
+      "600": { "$value": "#C45E4C", "$type": "color" },
+      "700": { "$value": "#A34438", "$type": "color" },
+      "800": { "$value": "#7F3229", "$type": "color" },
+      "900": { "$value": "#5C2219", "$type": "color" }
+    },
+
+    "secondary": {
+      "50":  { "$value": "#F5F0FB", "$type": "color" },
+      "100": { "$value": "#E8DDF5", "$type": "color" },
+      "200": { "$value": "#CEBAEA", "$type": "color" },
+      "300": { "$value": "#A98BD8", "$type": "color" },
+      "400": { "$value": "#8A65C8", "$type": "color" },
+      "500": { "$value": "#6B3FA0", "$type": "color", "$description": "Secondary default — uso en AI highlights, etiquetas premium" },
+      "600": { "$value": "#57328A", "$type": "color" },
+      "700": { "$value": "#432670", "$type": "color" },
+      "800": { "$value": "#301B54", "$type": "color" },
+      "900": { "$value": "#1F1038", "$type": "color" }
+    },
+
+    "neutral": {
+      "0":   { "$value": "#FFFFFF", "$type": "color" },
+      "50":  { "$value": "#FAF6F1", "$type": "color" },
+      "100": { "$value": "#F5EDE4", "$type": "color" },
+      "200": { "$value": "#E8DDD4", "$type": "color" },
+      "300": { "$value": "#D4C5B8", "$type": "color" },
+      "400": { "$value": "#B8A49A", "$type": "color" },
+      "500": { "$value": "#9A8880", "$type": "color" },
+      "600": { "$value": "#7A6A62", "$type": "color" },
+      "700": { "$value": "#5C4F48", "$type": "color" },
+      "800": { "$value": "#3D3330", "$type": "color" },
+      "850": { "$value": "#2A2228", "$type": "color" },
+      "900": { "$value": "#1C1A20", "$type": "color" },
+      "950": { "$value": "#120F14", "$type": "color" }
+    },
+
+    "semantic": {
+      "success": {
+        "light": { "$value": "#2D9B6F", "$type": "color" },
+        "dark":  { "$value": "#4ECFA0", "$type": "color" },
+        "bg-light": { "$value": "#E8F8F2", "$type": "color" },
+        "bg-dark":  { "$value": "#0D2B20", "$type": "color" }
+      },
+      "error": {
+        "light": { "$value": "#C0392B", "$type": "color" },
+        "dark":  { "$value": "#F06B6B", "$type": "color" },
+        "bg-light": { "$value": "#FDECEA", "$type": "color" },
+        "bg-dark":  { "$value": "#2C1010", "$type": "color" }
+      },
+      "warning": {
+        "light": { "$value": "#B45309", "$type": "color" },
+        "dark":  { "$value": "#FBBF24", "$type": "color" },
+        "bg-light": { "$value": "#FEF3C7", "$type": "color" },
+        "bg-dark":  { "$value": "#2D1F00", "$type": "color" }
+      },
+      "info": {
+        "light": { "$value": "#1D6FA4", "$type": "color" },
+        "dark":  { "$value": "#60AEDE", "$type": "color" },
+        "bg-light": { "$value": "#E0F0FA", "$type": "color" },
+        "bg-dark":  { "$value": "#0A1E2D", "$type": "color" }
+      }
+    },
+
+    "ai": {
+      "thinking": { "$value": "#A98BD8", "$type": "color", "$description": "Color del estado 'pensando' de la IA — pulsa suavemente" },
+      "confidence-high":   { "$value": "#2D9B6F", "$type": "color" },
+      "confidence-medium": { "$value": "#D97B6A", "$type": "color" },
+      "confidence-low":    { "$value": "#9A8880", "$type": "color" },
+      "gradient-start": { "$value": "#E8A598", "$type": "color" },
+      "gradient-end":   { "$value": "#6B3FA0", "$type": "color" }
+    },
+
+    "surface": {
+      "light": {
+        "background":  { "$value": "#F5EDE4", "$type": "color" },
+        "card":        { "$value": "#FAF6F1", "$type": "color" },
+        "overlay":     { "$value": "rgba(245, 237, 228, 0.92)", "$type": "color" },
+        "glass":       { "$value": "rgba(250, 246, 241, 0.75)", "$type": "color", "$description": "Liquid glass — iOS 26 inspired. Blur 20px." },
+        "border":      { "$value": "#E8DDD4", "$type": "color" },
+        "divider":     { "$value": "#EDE4DC", "$type": "color" }
+      },
+      "dark": {
+        "background":  { "$value": "#1C1A20", "$type": "color" },
+        "card":        { "$value": "#2A2228", "$type": "color" },
+        "overlay":     { "$value": "rgba(28, 26, 32, 0.92)", "$type": "color" },
+        "glass":       { "$value": "rgba(42, 34, 40, 0.75)", "$type": "color", "$description": "Liquid glass dark — frosted panel sobre superficie oscura. Blur 20px." },
+        "border":      { "$value": "#3D3330", "$type": "color" },
+        "divider":     { "$value": "#332B30", "$type": "color" }
+      }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "display":   { "$value": "Playfair Display", "$type": "fontFamily", "$description": "Google Fonts. Para headlines de impacto, splash, hero. Elegancia editorial." },
+      "heading":   { "$value": "Plus Jakarta Sans", "$type": "fontFamily", "$description": "Google Fonts. Para headings funcionales H1-H4. Moderna, geométrica, legible." },
+      "body":      { "$value": "Plus Jakarta Sans", "$type": "fontFamily", "$description": "Misma familia para consistencia. Regular y Medium para body copy." },
+      "mono":      { "$value": "JetBrains Mono", "$type": "fontFamily", "$description": "Para datos técnicos, confianza scores, porcentajes de análisis." }
+    },
+
+    "fontSize": {
+      "xs":   { "$value": "11", "$type": "dimension", "$description": "11sp — captions secundarios, timestamps" },
+      "sm":   { "$value": "12", "$type": "dimension", "$description": "12sp — captions, labels, badges" },
+      "base": { "$value": "14", "$type": "dimension", "$description": "14sp — body secundario" },
+      "md":   { "$value": "16", "$type": "dimension", "$description": "16sp — body principal. Mínimo recomendado WCAG." },
+      "lg":   { "$value": "18", "$type": "dimension", "$description": "18sp — body enfatizado, lead text" },
+      "xl":   { "$value": "22", "$type": "dimension", "$description": "22sp — H4, títulos de card" },
+      "2xl":  { "$value": "26", "$type": "dimension", "$description": "26sp — H3" },
+      "3xl":  { "$value": "32", "$type": "dimension", "$description": "32sp — H2" },
+      "4xl":  { "$value": "40", "$type": "dimension", "$description": "40sp — H1" },
+      "5xl":  { "$value": "52", "$type": "dimension", "$description": "52sp — Display, hero copy" },
+      "6xl":  { "$value": "64", "$type": "dimension", "$description": "64sp — Display grande, splash" }
+    },
+
+    "fontWeight": {
+      "regular":    { "$value": "400", "$type": "fontWeight" },
+      "medium":     { "$value": "500", "$type": "fontWeight" },
+      "semiBold":   { "$value": "600", "$type": "fontWeight" },
+      "bold":       { "$value": "700", "$type": "fontWeight" },
+      "extraBold":  { "$value": "800", "$type": "fontWeight" }
+    },
+
+    "lineHeight": {
+      "tight":   { "$value": "1.2", "$type": "number", "$description": "Display, headlines cortos" },
+      "snug":    { "$value": "1.35", "$type": "number", "$description": "H1-H2" },
+      "normal":  { "$value": "1.5", "$type": "number", "$description": "Body principal — óptimo para lectura" },
+      "relaxed": { "$value": "1.65", "$type": "number", "$description": "Body largo, descripciones extensas" }
+    },
+
+    "letterSpacing": {
+      "tighter": { "$value": "-0.02em", "$type": "dimension", "$description": "Display grandes" },
+      "tight":   { "$value": "-0.01em", "$type": "dimension", "$description": "H1-H2" },
+      "normal":  { "$value": "0em", "$type": "dimension" },
+      "wide":    { "$value": "0.05em", "$type": "dimension", "$description": "Caps, etiquetas, badges" },
+      "wider":   { "$value": "0.10em", "$type": "dimension", "$description": "All-caps decorativos" }
+    },
+
+    "scale": {
+      "display-xl":  { "family": "Playfair Display", "size": "64", "weight": "700", "lineHeight": "1.1",  "letterSpacing": "-0.02em" },
+      "display-lg":  { "family": "Playfair Display", "size": "52", "weight": "700", "lineHeight": "1.15", "letterSpacing": "-0.02em" },
+      "h1":          { "family": "Plus Jakarta Sans", "size": "40", "weight": "700", "lineHeight": "1.2",  "letterSpacing": "-0.01em" },
+      "h2":          { "family": "Plus Jakarta Sans", "size": "32", "weight": "700", "lineHeight": "1.25", "letterSpacing": "-0.01em" },
+      "h3":          { "family": "Plus Jakarta Sans", "size": "26", "weight": "600", "lineHeight": "1.3",  "letterSpacing": "0em"     },
+      "h4":          { "family": "Plus Jakarta Sans", "size": "22", "weight": "600", "lineHeight": "1.35", "letterSpacing": "0em"     },
+      "body-lg":     { "family": "Plus Jakarta Sans", "size": "18", "weight": "400", "lineHeight": "1.65", "letterSpacing": "0em"     },
+      "body":        { "family": "Plus Jakarta Sans", "size": "16", "weight": "400", "lineHeight": "1.5",  "letterSpacing": "0em"     },
+      "body-sm":     { "family": "Plus Jakarta Sans", "size": "14", "weight": "400", "lineHeight": "1.5",  "letterSpacing": "0em"     },
+      "label":       { "family": "Plus Jakarta Sans", "size": "12", "weight": "600", "lineHeight": "1.3",  "letterSpacing": "0.05em"  },
+      "caption":     { "family": "Plus Jakarta Sans", "size": "12", "weight": "400", "lineHeight": "1.4",  "letterSpacing": "0em"     },
+      "caption-xs":  { "family": "Plus Jakarta Sans", "size": "11", "weight": "400", "lineHeight": "1.4",  "letterSpacing": "0em"     },
+      "mono":        { "family": "JetBrains Mono",    "size": "14", "weight": "500", "lineHeight": "1.5",  "letterSpacing": "0em"     }
+    }
+  },
+
+  "spacing": {
+    "0":  { "$value": "0",   "$type": "dimension" },
+    "1":  { "$value": "4",   "$type": "dimension", "$description": "4px — micro espacios, separadores internos" },
+    "2":  { "$value": "8",   "$type": "dimension", "$description": "8px — padding de badges, separadores" },
+    "3":  { "$value": "12",  "$type": "dimension", "$description": "12px — padding interno pequeño" },
+    "4":  { "$value": "16",  "$type": "dimension", "$description": "16sp — padding estándar de componentes. Base grid." },
+    "5":  { "$value": "20",  "$type": "dimension" },
+    "6":  { "$value": "24",  "$type": "dimension", "$description": "24sp — margin entre secciones, padding de cards" },
+    "8":  { "$value": "32",  "$type": "dimension", "$description": "32sp — espacio entre bloques de contenido" },
+    "10": { "$value": "40",  "$type": "dimension" },
+    "12": { "$value": "48",  "$type": "dimension", "$description": "48sp — secciones mayores" },
+    "16": { "$value": "64",  "$type": "dimension", "$description": "64sp — hero sections, padding top grandes" },
+    "20": { "$value": "80",  "$type": "dimension" },
+    "24": { "$value": "96",  "$type": "dimension" },
+    "screen-horizontal": { "$value": "20", "$type": "dimension", "$description": "20px margen horizontal en pantalla 375px" },
+    "screen-horizontal-lg": { "$value": "24", "$type": "dimension", "$description": "24px para pantallas 390px+" }
+  },
+
+  "borderRadius": {
+    "none": { "$value": "0",  "$type": "dimension" },
+    "xs":   { "$value": "4",  "$type": "dimension", "$description": "Chips pequeños, badges" },
+    "sm":   { "$value": "8",  "$type": "dimension", "$description": "Inputs, buttons pequeños" },
+    "md":   { "$value": "12", "$type": "dimension", "$description": "Cards estándar" },
+    "lg":   { "$value": "16", "$type": "dimension", "$description": "Cards grandes, modales" },
+    "xl":   { "$value": "24", "$type": "dimension", "$description": "Bottom sheets, hero cards" },
+    "2xl":  { "$value": "32", "$type": "dimension", "$description": "Floating cards especiales" },
+    "full": { "$value": "9999", "$type": "dimension", "$description": "Botones pill, avatares, chips redondos" }
+  },
+
+  "shadow": {
+    "none": { "$value": "none", "$type": "shadow" },
+    "xs": {
+      "$value": "0px 1px 2px rgba(28, 26, 32, 0.06)",
+      "$type": "shadow",
+      "$description": "Elevación 1 — lista items, dividers sutiles"
+    },
+    "sm": {
+      "$value": "0px 2px 8px rgba(28, 26, 32, 0.08), 0px 1px 2px rgba(28, 26, 32, 0.04)",
+      "$type": "shadow",
+      "$description": "Elevación 2 — cards flotantes, inputs focused"
+    },
+    "md": {
+      "$value": "0px 4px 16px rgba(28, 26, 32, 0.12), 0px 2px 4px rgba(28, 26, 32, 0.06)",
+      "$type": "shadow",
+      "$description": "Elevación 3 — cards premium, dropdowns"
+    },
+    "lg": {
+      "$value": "0px 8px 32px rgba(28, 26, 32, 0.16), 0px 4px 8px rgba(28, 26, 32, 0.08)",
+      "$type": "shadow",
+      "$description": "Elevación 4 — bottom sheets, modales"
+    },
+    "xl": {
+      "$value": "0px 16px 48px rgba(28, 26, 32, 0.20), 0px 8px 16px rgba(28, 26, 32, 0.10)",
+      "$type": "shadow",
+      "$description": "Elevación 5 — floating action panels, toasts"
+    },
+    "blush-glow": {
+      "$value": "0px 0px 24px rgba(217, 123, 106, 0.35)",
+      "$type": "shadow",
+      "$description": "Glow efecto en botones CTA activos, AI results"
+    },
+    "plum-glow": {
+      "$value": "0px 0px 32px rgba(107, 63, 160, 0.30)",
+      "$type": "shadow",
+      "$description": "Glow IA en estados thinking, paywall features"
+    }
+  },
+
+  "animation": {
+    "duration": {
+      "instant":  { "$value": "100ms", "$description": "Hover states, ripples" },
+      "fast":     { "$value": "150ms", "$description": "Micro-feedback (botón press, toggle)" },
+      "normal":   { "$value": "250ms", "$description": "Transiciones de estado, aparición de elementos" },
+      "moderate": { "$value": "350ms", "$description": "Navegación entre pantallas, modales" },
+      "slow":     { "$value": "500ms", "$description": "Animaciones de entrada de pantalla completa" },
+      "loader":   { "$value": "1500ms", "$description": "AI thinking loop — ciclo completo" }
+    },
+    "easing": {
+      "standard":    { "$value": "cubic-bezier(0.4, 0.0, 0.2, 1.0)", "$description": "Material standard. Movimiento de elementos que cambian de estado." },
+      "enter":       { "$value": "cubic-bezier(0.0, 0.0, 0.2, 1.0)", "$description": "Elementos que entran a pantalla — decelera al llegar." },
+      "exit":        { "$value": "cubic-bezier(0.4, 0.0, 1.0, 1.0)", "$description": "Elementos que salen — acelera al irse." },
+      "spring":      { "$value": "cubic-bezier(0.34, 1.56, 0.64, 1.0)", "$description": "Efecto spring para feedback táctil (botones, cards)." },
+      "smooth":      { "$value": "cubic-bezier(0.25, 0.1, 0.25, 1.0)", "$description": "Transiciones suaves generales." }
+    }
+  },
+
+  "iconography": {
+    "library": "lucide-icons",
+    "version": "0.460+",
+    "packageFlutter": "lucide_icons: ^0.0.28",
+    "strokeWidth": {
+      "default": "1.5",
+      "emphasized": "2.0"
+    },
+    "sizes": {
+      "xs":  "16",
+      "sm":  "20",
+      "md":  "24",
+      "lg":  "28",
+      "xl":  "32",
+      "2xl": "40",
+      "3xl": "48"
+    },
+    "keyIcons": {
+      "wardrobe":       "shirt",
+      "add-item":       "plus-circle",
+      "camera":         "camera",
+      "body-analysis":  "scan-face",
+      "try-on":         "sparkles",
+      "outfit":         "layers",
+      "recommendation": "wand-2",
+      "favorite":       "heart",
+      "profile":        "circle-user",
+      "settings":       "settings-2",
+      "subscription":   "crown",
+      "color-season":   "palette",
+      "ai-thinking":    "brain-circuit",
+      "confidence":     "shield-check",
+      "share":          "share-2",
+      "filter":         "sliders-horizontal",
+      "search":         "search",
+      "notification":   "bell",
+      "close":          "x",
+      "back":           "chevron-left",
+      "forward":        "chevron-right"
+    }
+  },
+
+  "component": {
+    "touchTarget": {
+      "minimum": { "$value": "44", "$type": "dimension", "$description": "44x44px — WCAG 2.5.8 y Apple HIG mínimo absoluto" },
+      "comfortable": { "$value": "48", "$type": "dimension", "$description": "48x48px — preferido para elementos de uso frecuente" }
+    },
+    "button": {
+      "height": {
+        "sm": { "$value": "36", "$type": "dimension" },
+        "md": { "$value": "48", "$type": "dimension", "$description": "Default — cumple touch target" },
+        "lg": { "$value": "56", "$type": "dimension", "$description": "CTA principal, botones hero" }
+      },
+      "paddingHorizontal": {
+        "sm": { "$value": "16", "$type": "dimension" },
+        "md": { "$value": "24", "$type": "dimension" },
+        "lg": { "$value": "32", "$type": "dimension" }
+      },
+      "borderRadius": { "$value": "12", "$type": "dimension" },
+      "typography": "label"
+    },
+    "input": {
+      "height": { "$value": "52", "$type": "dimension" },
+      "paddingHorizontal": { "$value": "16", "$type": "dimension" },
+      "borderRadius": { "$value": "12", "$type": "dimension" },
+      "borderWidth": { "$value": "1.5", "$type": "dimension" },
+      "typography": "body"
+    },
+    "card": {
+      "padding": { "$value": "16", "$type": "dimension" },
+      "paddingLg": { "$value": "20", "$type": "dimension" },
+      "borderRadius": { "$value": "16", "$type": "dimension" },
+      "borderRadiusLg": { "$value": "24", "$type": "dimension" }
+    },
+    "avatar": {
+      "xs": { "$value": "24", "$type": "dimension" },
+      "sm": { "$value": "32", "$type": "dimension" },
+      "md": { "$value": "40", "$type": "dimension" },
+      "lg": { "$value": "56", "$type": "dimension" },
+      "xl": { "$value": "80", "$type": "dimension" },
+      "2xl": { "$value": "120", "$type": "dimension" }
+    },
+    "badge": {
+      "height": { "$value": "20", "$type": "dimension" },
+      "paddingHorizontal": { "$value": "8", "$type": "dimension" },
+      "borderRadius": { "$value": "9999", "$type": "dimension" },
+      "typography": "caption"
+    },
+    "bottomSheet": {
+      "borderRadiusTop": { "$value": "28", "$type": "dimension" },
+      "handleWidth": { "$value": "40", "$type": "dimension" },
+      "handleHeight": { "$value": "4", "$type": "dimension" },
+      "handleRadius": { "$value": "9999", "$type": "dimension" },
+      "backdrop": { "$value": "rgba(28, 26, 32, 0.60)", "$type": "color" }
+    },
+    "dialog": {
+      "borderRadius": { "$value": "28", "$type": "dimension" },
+      "maxWidth": { "$value": "340", "$type": "dimension" },
+      "padding": { "$value": "24", "$type": "dimension" }
+    },
+    "tag": {
+      "height": { "$value": "28", "$type": "dimension" },
+      "paddingHorizontal": { "$value": "12", "$type": "dimension" },
+      "borderRadius": { "$value": "9999", "$type": "dimension" },
+      "typography": "label"
+    }
+  }
+}

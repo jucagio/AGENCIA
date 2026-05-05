@@ -30,7 +30,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra="ignore",
+        extra="forbid",
     )
 
     # -------------------------------------------------------------------------
@@ -52,6 +52,8 @@ class Settings(BaseSettings):
     # -------------------------------------------------------------------------
     # Comma-separated list of allowed origins. Empty in dev -> sane defaults applied.
     ALLOWED_ORIGINS: str = ""
+    # Placeholder. Implementación real en 0.3 con slowapi+Redis
+    RATE_LIMIT_PER_MINUTE: int = Field(default=60, ge=1, le=10000)
 
     # -------------------------------------------------------------------------
     # Custom JWT (LEGACY - to be removed in Entrega 0.2 per ADR-001)
@@ -60,7 +62,7 @@ class Settings(BaseSettings):
         default="dev-only-change-me-min-32-chars-1234567890",
         description="Symmetric key for legacy custom JWT (HS256). LEGACY.",
     )
-    JWT_ALGORITHM: str = "HS256"
+    JWT_ALGORITHM: Literal["HS256"] = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
@@ -111,6 +113,7 @@ class Settings(BaseSettings):
     STRIPE_SECRET_KEY: str = ""
     STRIPE_WEBHOOK_SECRET: str = ""
     MERCADO_PAGO_ACCESS_TOKEN: str = ""
+    MERCADO_PAGO_WEBHOOK_SECRET: str = ""
 
     # -------------------------------------------------------------------------
     # Validators
@@ -180,6 +183,10 @@ class Settings(BaseSettings):
                 missing.append(key)
         if self.SECRET_KEY.startswith("dev-only-"):
             missing.append("SECRET_KEY (still using dev placeholder)")
+        if self.STRIPE_SECRET_KEY and not self.STRIPE_WEBHOOK_SECRET:
+            missing.append("STRIPE_WEBHOOK_SECRET (required if STRIPE_SECRET_KEY set)")
+        if self.MERCADO_PAGO_ACCESS_TOKEN and not self.MERCADO_PAGO_WEBHOOK_SECRET:
+            missing.append("MERCADO_PAGO_WEBHOOK_SECRET (required if MP token set)")
         if missing:
             raise RuntimeError(
                 f"Production env missing critical settings: {', '.join(missing)}"
