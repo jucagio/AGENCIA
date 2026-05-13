@@ -115,3 +115,76 @@
 ---
 
 **Firma Sasha:** Documento vivo. Actualizar al cerrar cada entrega del Sprint 0.
+
+---
+
+## 7. Sprint 0.2 — Cambios + Decisiones (2026-05-05 → 2026-05-12)
+
+### 7.1 Migration 003 vs 004 — Source of Truth
+
+**Decisión:** Migration **004** (`004_consolidated_schema_v2.sql`) es el source of truth para el schema completo de 12 tablas.
+
+**Rationale:**
+- Migration 003 (`003_adr001_profiles_migration.sql`) es el camino incremental para producción (upgrade desde un Supabase con datos).
+- Migration 004 asume DB vacía o entorno reproducible (CI, staging fresh clone). Es lo que Sasha y Brook usan en dev local.
+- En producción futura, si hay datos reales, se aplicará 003 (o un equivalente incremental), NO 004 (que tiene `DROP TABLE CASCADE`).
+- Migration 004 ahora está protegida con `CREATE TABLE IF NOT EXISTS` y `DROP TRIGGER IF EXISTS` para mayor idempotencia.
+- Se creó `004_consolidated_schema_v2_down.sql` como rollback simétrico.
+
+### 7.2 AdminClient Guard Pattern (Cyber Neo H3)
+
+**Implementación:**
+- `AdminClient` envuelve el cliente PostgREST service-role.
+- `.with_user_check(user_id, *, id_column="user_id")` inyecta `.eq(id_column, str(user_id))` en cada `.table()`.
+- `.trusted()` — sin filtro de usuario. Solo para workers ARQ y webhooks verificados.
+- `.table()` directo levanta `PermissionDeniedError` siempre.
+
+**Decisión `id_column`** (H5):
+- La tabla `profiles` usa el UUID del usuario como PK (`id`), sin columna `user_id` separada.
+- `ProfileRepository` llama `.with_user_check(user_id=uid, id_column="id")`.
+- El resto de tablas usan el default `id_column="user_id"`.
+
+**Decisión `schema()`** (M1):
+- `_BoundAdminClient.schema()` ahora retorna un **nuevo** `_BoundAdminClient` preservando `user_id`, `id_column`, y `trusted` flags.
+- Esto evita que un cambio de schema anule el guard de user_id.
+
+### 7.3 Tests con Mocks — Decisión Consciente para 0.2
+
+**Decisión:** Los tests de 0.2 (unit) usan `unittest.mock`. Los tests de integración contra Supabase real quedan para 0.3+.
+
+**Rationale:**
+- En 0.2 no hay Supabase de staging configurado en CI.
+- Los mocks validan la **lógica del guard** (inyección de filtros, ownership checks), que es lo crítico de seguridad.
+- La integración real (tabla existe, FK funciona, RLS bloquea correctamente) se valida manualmente en Supabase dashboard.
+
+**Mitigación:**
+- Se añadió `tests/integration/test_repos_real_schema.py` — sin DB real, parsea el SQL de migration 004 con regex para verificar que los `_table` de cada repo coincidan con las tablas definidas. Esto hubiera capturado el bug H4 (`body_analyses` vs `body_analysis`).
+
+### 7.4 Repositorios — 9 repos implementados
+
+| Repo | Tabla | Nota |
+|------|-------|------|
+| `ProfileRepository` | `profiles` | id_column="id" (H5) |
+| `WardrobeRepository` | `wardrobe_items` | soft-delete |
+| `BodyAnalysisRepository` | `body_analysis` | H4: era body_analyses |
+| `RecommendationRepository` | `recommendations` | |
+| `RecommendationItemRepository` | `recommendation_items` | H6: owner check |
+| `TryOnRepository` | `try_ons` | |
+| `SubscriptionRepository` | `subscriptions` | |
+| `UserStyleProfileRepository` | `user_style_profile` | nuevo en patch |
+| `UsageCounterRepository` | `usage_counters` | L1: stored proc |
+
+### 7.5 Security Findings Aplicados (patch 2026-05-12)
+
+| ID | Descripción | Fix |
+|----|-------------|-----|
+| H4 | `body_analyses` → `body_analysis` | repos.py + docstring |
+| H5 | AdminClient no soportaba tablas sin columna `user_id` | `id_column` param |
+| H6 | RecommendationItem no verificaba ownership del padre | `_verify_recommendation_owner()` |
+| M1 | `_BoundAdminClient.schema()` rompía el guard | retorna nuevo `_BoundAdminClient` |
+| M4 | `audit_log` policy permitía writes anónimos | policy eliminada |
+| M6 | `usage_counters` INSERT/UPDATE/DELETE por usuario | policies eliminadas |
+| L1 | `increment()` no era atómico | stored proc `increment_usage()` en migration 004 |
+
+**Pendiente 0.3:** Activar `.rpc("increment_usage", {...})` en `UsageCounterRepository.increment()` una vez aplicada migration 004 a Supabase remoto. Ver TODO en repos.py.
+

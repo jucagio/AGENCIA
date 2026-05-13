@@ -1,6 +1,14 @@
 -- =============================================================
 -- Migration 005: RLS Policies for Consolidated Schema V2
 -- =============================================================
+-- ARCHITECTURE NOTE:
+--   service_role bypasses RLS by design (Supabase default).
+--   The guard for user-scoped tables is NOT these policies alone —
+--   it is app/core/admin_client.AdminClient.with_user_check() at the
+--   application layer. These policies are the last line of defence
+--   for direct PostgREST client access (e.g., mobile app using
+--   user-scoped JWT directly against the REST API).
+-- =============================================================
 
 -- profiles
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -44,14 +52,14 @@ CREATE POLICY "recommendations_delete" ON public.recommendations FOR DELETE USIN
 
 -- recommendation_items
 ALTER TABLE public.recommendation_items ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "recommendation_items_select" ON public.recommendation_items FOR SELECT 
+CREATE POLICY "recommendation_items_select" ON public.recommendation_items FOR SELECT
 USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
-CREATE POLICY "recommendation_items_insert" ON public.recommendation_items FOR INSERT 
+CREATE POLICY "recommendation_items_insert" ON public.recommendation_items FOR INSERT
 WITH CHECK (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
-CREATE POLICY "recommendation_items_update" ON public.recommendation_items FOR UPDATE 
-USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid())) 
+CREATE POLICY "recommendation_items_update" ON public.recommendation_items FOR UPDATE
+USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()))
 WITH CHECK (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
-CREATE POLICY "recommendation_items_delete" ON public.recommendation_items FOR DELETE 
+CREATE POLICY "recommendation_items_delete" ON public.recommendation_items FOR DELETE
 USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
 
 -- user_style_profile
@@ -62,15 +70,19 @@ CREATE POLICY "user_style_profile_update" ON public.user_style_profile FOR UPDAT
 CREATE POLICY "user_style_profile_delete" ON public.user_style_profile FOR DELETE USING (auth.uid() = user_id);
 
 -- usage_counters
+-- [M6] Users may only SELECT their own counters. INSERT / UPDATE / DELETE are
+-- restricted to service_role (ARQ worker via increment_usage() stored proc).
+-- This prevents users from zeroing or bypassing their quota limits.
 ALTER TABLE public.usage_counters ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "usage_counters_select" ON public.usage_counters FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "usage_counters_insert" ON public.usage_counters FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "usage_counters_update" ON public.usage_counters FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "usage_counters_delete" ON public.usage_counters FOR DELETE USING (auth.uid() = user_id);
+-- No INSERT/UPDATE/DELETE policies — only service_role (via increment_usage RPC) writes here.
 
 -- audit_log
+-- [M4] audit_log is INSERT-only by service_role. No user policy is needed or safe:
+-- allowing auth.uid() IS NULL would permit unauthenticated writes, which is
+-- exploitable for log pollution and denial-of-service on the audit trail.
 ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "audit_log_insert" ON public.audit_log FOR INSERT WITH CHECK (auth.uid() = user_id OR auth.uid() IS NULL);
+-- No policies defined: only service_role (which bypasses RLS) may write to audit_log.
 
 -- idempotency_keys
 ALTER TABLE public.idempotency_keys ENABLE ROW LEVEL SECURITY;

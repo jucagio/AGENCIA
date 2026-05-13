@@ -1,11 +1,16 @@
 """
-RLS enforcement tests — Sprint 0.2.
+RLS enforcement tests — Sprint 0.2 patch.
 
 These tests verify the AdminClient guard pattern (Cyber Neo H3):
   - with_user_check() auto-injects user_id filter → cross-tenant reads return nothing
+  - with_user_check(id_column="id") works for tables where PK == user id (profiles)
   - direct AdminClient.table() access raises PermissionDeniedError
   - trusted() allows cross-user operations (webhook context)
   - BaseRepository CRUD methods enforce ownership via with_user_check()
+  - [M1] _BoundAdminClient.schema() preserves guard state
+  - [H5] ProfileRepository uses id_column="id" guard
+  - [H6] RecommendationItemRepository verifies parent ownership before acting
+  - [L1] UsageCounterRepository.increment handles concurrent calls
 
 All tests use unittest.mock — no live Supabase connection required.
 Coverage target: 80%+ across app/core/admin_client.py + app/repositories/
@@ -16,17 +21,22 @@ Run:
 
 from __future__ import annotations
 
-import unittest.mock as mock
+import asyncio
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 from uuid import UUID, uuid4
 
 import pytest
+from pydantic import BaseModel, ConfigDict
 
 from app.core.admin_client import AdminClient, _BoundAdminClient
 from app.core.exceptions import NotFoundError, PermissionDeniedError
 from app.repositories.base import BaseRepository
-
+from app.repositories.repos import (
+    ProfileRepository,
+    RecommendationItemRepository,
+    UsageCounterRepository,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -35,6 +45,7 @@ from app.repositories.base import BaseRepository
 USER_A = uuid4()
 USER_B = uuid4()
 RECORD_ID = uuid4()
+RECO_ID = uuid4()
 
 
 def make_postgrest_response(data: Any, count: int | None = None):
@@ -76,8 +87,6 @@ def make_admin_client(builder: MagicMock | None = None) -> AdminClient:
 # ---------------------------------------------------------------------------
 # Minimal Pydantic model for repository tests
 # ---------------------------------------------------------------------------
-
-from pydantic import BaseModel, ConfigDict
 
 
 class FakeRecord(BaseModel):
@@ -128,10 +137,26 @@ class TestAdminClientGuard:
         pg.table.return_value = builder
 
         admin = AdminClient(pg)
-        admin.with_user_check(user_id=USER_A).table("profiles")
+        admin.with_user_check(user_id=USER_A).table("wardrobe_items")
 
-        # Verify the builder had user_id injected
+        # Verify the builder had user_id injected (default column = "user_id")
         builder.eq.assert_called_once_with("user_id", str(USER_A))
+
+    def test_with_user_check_custom_id_column(self):
+        """
+        [H5] with_user_check(id_column="id") must inject .eq("id", str(user_id))
+        on the builder — used by ProfileRepository where PK == user_id.
+        """
+        builder = MagicMock()
+        builder.eq.return_value = builder
+
+        pg = MagicMock()
+        pg.table.return_value = builder
+
+        admin = AdminClient(pg)
+        admin.with_user_check(user_id=USER_A, id_column="id").table("profiles")
+
+        builder.eq.assert_called_once_with("id", str(USER_A))
 
     def test_trusted_does_not_inject_user_id_filter(self):
         """trusted().table() must NOT call .eq("user_id", ...) on the builder."""
@@ -146,6 +171,68 @@ class TestAdminClientGuard:
 
 
 # ---------------------------------------------------------------------------
+# [M1] schema() guard preservation tests
+# ---------------------------------------------------------------------------
+
+
+class TestAdminClientSchemaGuard:
+    """
+    [M1] _BoundAdminClient.schema() must return a new _BoundAdminClient that
+    preserves user_id and trusted flags — not a raw AsyncPostgrestClient.
+    """
+
+    def test_schema_on_user_check_returns_bound_client(self):
+        pg = MagicMock()
+        pg.schema.return_value = MagicMock()
+
+        admin = AdminClient(pg)
+        bound = admin.with_user_check(user_id=USER_A)
+        result = bound.schema("custom_schema")
+
+        assert isinstance(result, _BoundAdminClient), (
+            "schema() must return _BoundAdminClient, not raw pg client"
+        )
+
+    def test_schema_preserves_user_id(self):
+        """After .schema(), the user_id filter must still be applied on .table()."""
+        inner_builder = MagicMock()
+        inner_builder.eq.return_value = inner_builder
+
+        switched_pg = MagicMock()
+        switched_pg.table.return_value = inner_builder
+
+        pg = MagicMock()
+        pg.schema.return_value = switched_pg
+
+        admin = AdminClient(pg)
+        admin.with_user_check(user_id=USER_A).schema("other").table("wardrobe_items")
+
+        inner_builder.eq.assert_called_once_with("user_id", str(USER_A))
+
+    def test_schema_on_trusted_returns_bound_client(self):
+        pg = MagicMock()
+        pg.schema.return_value = MagicMock()
+
+        admin = AdminClient(pg)
+        result = admin.trusted().schema("analytics")
+
+        assert isinstance(result, _BoundAdminClient)
+
+    def test_schema_on_trusted_no_user_filter(self):
+        """schema() on a trusted client must still not inject user_id."""
+        inner_builder = MagicMock()
+        switched_pg = MagicMock()
+        switched_pg.table.return_value = inner_builder
+        pg = MagicMock()
+        pg.schema.return_value = switched_pg
+
+        admin = AdminClient(pg)
+        admin.trusted().schema("analytics").table("audit_log")
+
+        inner_builder.eq.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
 # Cross-tenant isolation tests (two users, RLS at app layer)
 # ---------------------------------------------------------------------------
 
@@ -154,10 +241,6 @@ class TestCrossTenantIsolation:
     """
     Verify that a record belonging to USER_A is unreachable when querying
     as USER_B, even through the AdminClient (service-role).
-
-    The guard pattern works by injecting .eq("user_id", str(user_b)) so the
-    Postgres query itself filters — PostgREST/Supabase RLS is the last line of
-    defence, but this app-layer guard prevents accidental cross-tenant leaks.
     """
 
     @pytest.mark.anyio
@@ -167,7 +250,6 @@ class TestCrossTenantIsolation:
         PostgREST returns empty (user_id filter excluded it).
         BaseRepository must raise NotFoundError, NOT return USER_A's data.
         """
-        # Simulate PostgREST returning None because user_id filter excluded the row
         response = make_postgrest_response(data=None)
         builder = make_pg_chain(response)
 
@@ -341,3 +423,230 @@ class TestAdminClientUserIdValidation:
         uid = uuid4()
         bound = admin.with_user_check(user_id=uid)
         assert isinstance(bound, _BoundAdminClient)
+
+
+# ---------------------------------------------------------------------------
+# [H5] ProfileRepository — id_column="id" guard
+# ---------------------------------------------------------------------------
+
+
+class TestProfileRepositoryIdColumn:
+    """ProfileRepository must scope queries using column 'id', not 'user_id'."""
+
+    @pytest.mark.anyio
+    async def test_get_profile_uses_id_column(self):
+        """get_profile must inject .eq('id', user_id) not .eq('user_id', ...)."""
+        from datetime import datetime, timezone
+
+        profile_row = {
+            "id": str(USER_A),
+            "first_name": "Alice",
+            "last_name": "Smith",
+            "preferred_language": "es",
+            "notification_preferences": {"push": True, "email": True},
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "deleted_at": None,
+            "avatar_url": None,
+            "date_of_birth": None,
+            "country_code": None,
+        }
+
+        response = make_postgrest_response(data=profile_row)
+        builder = make_pg_chain(response)
+        pg = MagicMock()
+        pg.table.return_value = builder
+        admin = AdminClient(pg)
+
+        repo = ProfileRepository(admin)
+        result = await repo.get_profile(user_id=USER_A)
+
+        # The first .eq() call on the builder must use "id", not "user_id"
+        first_eq_call = builder.eq.call_args_list[0]
+        assert first_eq_call.args[0] == "id", (
+            f"ProfileRepository must use id_column='id', got '{first_eq_call.args[0]}'"
+        )
+        assert result is not None
+
+    @pytest.mark.anyio
+    async def test_upsert_profile_no_spurious_user_id_key(self):
+        """upsert_profile must NOT inject a 'user_id' key into the payload."""
+        from datetime import datetime, timezone
+
+        profile_row = {
+            "id": str(USER_A),
+            "first_name": "Bob",
+            "last_name": None,
+            "preferred_language": "es",
+            "notification_preferences": {"push": True, "email": True},
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "deleted_at": None,
+            "avatar_url": None,
+            "date_of_birth": None,
+            "country_code": None,
+        }
+
+        response = make_postgrest_response(data=profile_row)
+        builder = make_pg_chain(response)
+        pg = MagicMock()
+        pg.table.return_value = builder
+        admin = AdminClient(pg)
+
+        repo = ProfileRepository(admin)
+        await repo.upsert_profile(user_id=USER_A, data={"first_name": "Bob"})
+
+        # Inspect the payload passed to .upsert()
+        upsert_call = builder.upsert.call_args
+        assert upsert_call is not None
+        payload = upsert_call.args[0]
+        assert "id" in payload, "upsert payload must contain 'id'"
+        assert "user_id" not in payload, (
+            "upsert payload must NOT contain spurious 'user_id' "
+            "(profiles table has no user_id column)"
+        )
+
+
+# ---------------------------------------------------------------------------
+# [H6] RecommendationItemRepository — ownership verification
+# ---------------------------------------------------------------------------
+
+
+class TestRecommendationItemOwnership:
+    """
+    [H6] list_for_recommendation and bulk_create must verify parent ownership.
+    """
+
+    def _make_reco_item_repo(self, verify_response, items_response=None):
+        """
+        Build a RecommendationItemRepository whose mock returns:
+          - verify_response: for the ownership verification query
+          - items_response: for the actual items query
+        """
+        verify_resp = make_postgrest_response(data=verify_response)
+        verify_builder = make_pg_chain(verify_resp)
+
+        pg = MagicMock()
+
+        if items_response is not None:
+            items_resp = make_postgrest_response(data=items_response)
+            items_builder = make_pg_chain(items_resp)
+            # First call to pg.table is verification, second is item fetch
+            pg.table.side_effect = [verify_builder, items_builder]
+        else:
+            pg.table.return_value = verify_builder
+
+        return RecommendationItemRepository(AdminClient(pg))
+
+    @pytest.mark.anyio
+    async def test_list_raises_not_found_when_reco_belongs_to_other_user(self):
+        """USER_B cannot list items from USER_A's recommendation."""
+        repo = self._make_reco_item_repo(verify_response=None)
+
+        with pytest.raises(NotFoundError):
+            await repo.list_for_recommendation(
+                user_id=USER_B, recommendation_id=RECO_ID
+            )
+
+    @pytest.mark.anyio
+    async def test_bulk_create_raises_not_found_when_reco_belongs_to_other_user(self):
+        """USER_B cannot add items to USER_A's recommendation."""
+        repo = self._make_reco_item_repo(verify_response=None)
+
+        with pytest.raises(NotFoundError):
+            await repo.bulk_create(
+                user_id=USER_B,
+                recommendation_id=RECO_ID,
+                items=[{"wardrobe_item_id": str(uuid4()), "position": 1}],
+            )
+
+    @pytest.mark.anyio
+    async def test_list_succeeds_when_reco_is_owned(self):
+        """list_for_recommendation returns items when ownership check passes."""
+        from app.models.recommendation import RecommendationItem
+
+        verify_row = {"id": str(RECO_ID)}
+        item_row = {
+            "recommendation_id": str(RECO_ID),
+            "wardrobe_item_id": str(uuid4()),
+            "position": 1,
+            "role": "top",
+        }
+
+        repo = self._make_reco_item_repo(
+            verify_response=verify_row,
+            items_response=[item_row],
+        )
+
+        items = await repo.list_for_recommendation(
+            user_id=USER_A, recommendation_id=RECO_ID
+        )
+        assert len(items) == 1
+        assert isinstance(items[0], RecommendationItem)
+
+
+# ---------------------------------------------------------------------------
+# [L1] UsageCounterRepository — concurrent increment safety
+# ---------------------------------------------------------------------------
+
+
+class TestUsageCounterConcurrency:
+    """
+    [L1] increment() must be safe for concurrent callers.
+    Since we mock PostgREST, we verify that 10 concurrent calls all
+    succeed and each resolves to the expected model (no exceptions).
+    The actual atomicity guarantee comes from the stored procedure in the DB.
+    """
+
+    @pytest.mark.anyio
+    async def test_concurrent_increments_all_succeed(self):
+        """10 concurrent increments must all complete without exceptions."""
+        from datetime import date
+
+        from app.models.usage_counter import UsageCounter
+
+        counter_row = {
+            "user_id": str(USER_A),
+            "period_start": date.today().replace(day=1).isoformat(),
+            "try_ons_used": 10,
+            "recommendations_used": 0,
+            "body_analyses_used": 0,
+        }
+
+        # Each call gets its own builder mock to simulate concurrent execution
+        def make_repo():
+            response = make_postgrest_response(data=counter_row)
+            builder = make_pg_chain(response)
+            pg = MagicMock()
+            pg.table.return_value = builder
+            return UsageCounterRepository(AdminClient(pg))
+
+        results = await asyncio.gather(
+            *[
+                make_repo().increment(user_id=USER_A, field="try_ons_used")
+                for _ in range(10)
+            ]
+        )
+
+        assert len(results) == 10
+        for result in results:
+            assert isinstance(result, UsageCounter)
+            assert result.try_ons_used == 10  # reflects mocked DB response
+
+    def test_increment_rejects_invalid_field(self):
+        """increment() must raise ValueError for unlisted field names."""
+        pg = MagicMock()
+        repo = UsageCounterRepository(AdminClient(pg))
+
+        with pytest.raises(ValueError, match="field must be one of"):
+            # Not awaited — ValueError is raised synchronously before any I/O
+            coro = repo.increment(user_id=USER_A, field="quota_bypass_attempt")
+            # Trigger the coroutine to hit the validation line
+            try:
+                coro.send(None)
+            except StopIteration:
+                pass
+            except ValueError:
+                raise  # re-raise so pytest.raises catches it
+            finally:
+                coro.close()

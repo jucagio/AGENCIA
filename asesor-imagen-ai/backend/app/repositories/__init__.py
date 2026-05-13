@@ -14,6 +14,7 @@ from app.repositories.repos import (
     SubscriptionRepository,
     TryOnRepository,
     UsageCounterRepository,
+    UserStyleProfileRepository,
     WardrobeRepository,
 )
 
@@ -26,5 +27,6 @@ __all__ = [
     "RecommendationItemRepository",
     "TryOnRepository",
     "SubscriptionRepository",
+    "UserStyleProfileRepository",
     "UsageCounterRepository",
 ]
