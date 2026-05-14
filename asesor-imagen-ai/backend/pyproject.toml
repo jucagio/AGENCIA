@@ -40,8 +40,15 @@ filterwarnings = [
 
 [tool.ruff]
 target-version = "py312"
-line-length = 100
+line-length = 120  # increased from 100 — long lines common in FastAPI route definitions
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "S", "B"]
-ignore = ["S101"]  # Allow assert in tests
+ignore = [
+    "S101",  # allow assert in tests
+    "B008",  # FastAPI standard: Query/Header in default args
+    "N818",  # allow AppException (not renamed to AppError to avoid breaking changes)
+    "S104",  # binding to all interfaces is expected in Docker / Railway
+    "S105",  # false positive — ruff mistakes JWT field names (token_type, access_token) for passwords
+    "S106",  # same — test mock values for token fields are not hardcoded credentials
+]

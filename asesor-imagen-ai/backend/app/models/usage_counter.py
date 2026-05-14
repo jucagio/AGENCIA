@@ -1,6 +1,8 @@
 from datetime import date
-from pydantic import BaseModel, ConfigDict
 from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict
+
 
 class UsageCounterBase(BaseModel):
     period_start: date

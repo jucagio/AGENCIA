@@ -1,4 +1,5 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, EmailStr
+
 
 class RegisterRequest(BaseModel):
     email: EmailStr

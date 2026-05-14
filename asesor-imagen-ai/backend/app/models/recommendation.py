@@ -1,7 +1,9 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
+
 
 class RecommendationItemBase(BaseModel):
     wardrobe_item_id: UUID

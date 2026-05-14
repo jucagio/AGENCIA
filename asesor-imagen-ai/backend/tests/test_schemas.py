@@ -42,7 +42,6 @@ from app.schemas.wardrobe import (
     WardrobeItemUpdateRequest,
 )
 
-
 NOW = datetime.now(timezone.utc)
 UID = uuid4()
 RID = uuid4()
@@ -146,7 +145,7 @@ class TestProfileSchemas:
             created_at=NOW.isoformat(),
             updated_at=NOW.isoformat(),
         )
-        assert r.id == str(UID)
+        assert str(r.id) == str(UID)
 
 
 # ---------------------------------------------------------------------------
@@ -178,7 +177,7 @@ class TestWardrobeSchemas:
             created_at=NOW.isoformat(),
             updated_at=NOW.isoformat(),
         )
-        assert r.user_id == str(UID)
+        assert str(r.user_id) == str(UID)
 
 
 # ---------------------------------------------------------------------------
@@ -397,7 +396,7 @@ class TestSubscriptionSchemas:
 
     def test_status_response(self):
         r = SubscriptionStatusResponse(
-            plan_type="free",
+            plan="free",  # field renamed from plan_type in SubscriptionStatusResponse
             status="active",
             is_active=True,
         )

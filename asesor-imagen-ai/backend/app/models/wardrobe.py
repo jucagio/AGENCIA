@@ -1,20 +1,22 @@
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
+
 
 class WardrobeItemBase(BaseModel):
     image_url: str
     storage_path: Optional[str] = None
     cdn_url: Optional[str] = None
-    
+
     primary_color: Optional[str] = None
     primary_color_hex: Optional[str] = None
     secondary_colors: Optional[Dict[str, Any]] = None
     detected_style: Optional[str] = None
     detected_occasion: Optional[List[str]] = None
     category: Optional[str] = None
-    
+
     size: Optional[str] = None
     brand: Optional[str] = None
     price_paid: Optional[float] = None

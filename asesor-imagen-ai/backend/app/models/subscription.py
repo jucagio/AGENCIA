@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
+
 
 class SubscriptionBase(BaseModel):
     plan_type: str = Field(..., pattern="^(free|estilo|imagen)$")

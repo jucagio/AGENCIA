@@ -47,15 +47,13 @@ async def test_health_has_correct_content_type():
 
 
 @pytest.mark.anyio
-async def test_nonexistent_endpoint_returns_404():
-    """Requesting a non-existent endpoint should return 404 with error body."""
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://testserver") as client:
-        response = await client.get("/api/v1/nonexistent")
-
+async def test_nonexistent_endpoint_returns_404(client):
+    """Requesting a non-existent endpoint should return 404 (using auth-mocked client
+    so auth_middleware passes and the router can emit 404, not auth_middleware 401)."""
+    from tests.conftest import AUTH_HEADERS
+    response = await client.get("/api/v1/nonexistent", headers=AUTH_HEADERS)
     assert response.status_code == 404
     data = response.json()
-    # FastAPI returns {"detail": "Not Found"} for unmatched routes
     assert "detail" in data or "error" in data
 
 

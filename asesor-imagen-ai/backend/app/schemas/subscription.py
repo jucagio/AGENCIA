@@ -12,7 +12,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 # ---------------------------------------------------------------------------
 # Request schemas (client -> server)
 # ---------------------------------------------------------------------------
@@ -88,7 +87,7 @@ class SubscriptionResponse(BaseModel):
 class SubscriptionStatusResponse(BaseModel):
     """Lightweight status check — used by mobile app on launch."""
 
-    plan_type: str
+    plan: str  # renamed from plan_type to match client-facing API contract
     status: str
     is_active: bool
     trial_ends_at: Optional[datetime] = None
