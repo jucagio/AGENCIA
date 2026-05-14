@@ -54,7 +54,7 @@ RID = uuid4()
 
 class TestAuthSchemas:
     def test_register_request_valid(self):
-        r = RegisterRequest(email="test@example.com", password="secret123")
+        r = RegisterRequest(email="test@example.com", password="secret1234")  # 10 chars, 1 digit
         assert r.email == "test@example.com"
 
     def test_register_request_invalid_email(self):
@@ -156,7 +156,7 @@ class TestProfileSchemas:
 class TestWardrobeSchemas:
     def test_create_request_minimal(self):
         r = WardrobeItemCreateRequest(image_url="https://example.com/img.jpg")
-        assert r.image_url.startswith("https://")
+        assert str(r.image_url).startswith("https://")
 
     def test_create_request_with_tags(self):
         r = WardrobeItemCreateRequest(

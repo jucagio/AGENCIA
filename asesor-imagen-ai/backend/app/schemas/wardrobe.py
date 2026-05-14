@@ -2,11 +2,11 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AnyHttpUrl, BaseModel, ConfigDict
 
 
 class WardrobeItemCreateRequest(BaseModel):
-    image_url: str
+    image_url: AnyHttpUrl  # SSRF prevention: must be a valid http/https URL
     category: Optional[str] = None
     size: Optional[str] = None
     brand: Optional[str] = None

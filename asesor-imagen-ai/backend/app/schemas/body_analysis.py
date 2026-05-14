@@ -2,12 +2,13 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AnyHttpUrl, BaseModel, ConfigDict
 
 
 class BodyAnalysisCreateRequest(BaseModel):
     """Submit a body image for analysis (multipart handled at endpoint level)."""
-    image_url: Optional[str] = None  # direct URL upload (mobile use case)
+    # AnyHttpUrl enforces https/http scheme — SSRF prevention (Cyber Neo A08-HIGH1)
+    image_url: Optional[AnyHttpUrl] = None  # direct URL upload (mobile use case)
 
 
 class BodyAnalysisResponse(BaseModel):

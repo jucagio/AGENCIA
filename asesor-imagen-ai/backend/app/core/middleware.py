@@ -145,6 +145,8 @@ async def request_logging_middleware(request: Request, call_next: CallNext) -> R
             "path": request.url.path,
             "status": response.status_code,
             "duration_ms": round(duration_ms, 2),
+            # A09-LOW1: include user_id for forensic correlation when auth middleware set it
+            "user_id": getattr(request.state, "user_id", None),
         },
     )
 
@@ -336,10 +338,10 @@ async def idempotency_middleware(request: Request, call_next: CallNext) -> Respo
     # Execute the actual request
     response = await call_next(request)
 
-    # Persist result
+    # Persist result — body_bytes initialised here so the except branch always has it
+    body_bytes = b""
     try:
         # Read body for caching (StreamingResponse workaround)
-        body_bytes = b""
         async for chunk in response.body_iterator:  # type: ignore[attr-defined]
             body_bytes += chunk if isinstance(chunk, bytes) else chunk.encode()
 
@@ -348,17 +350,28 @@ async def idempotency_middleware(request: Request, call_next: CallNext) -> Respo
         except (json.JSONDecodeError, ValueError):
             body_json = {"raw": body_bytes.decode("utf-8", errors="replace")}
 
-        await (
-            admin.trusted()
-            .table("idempotency_keys")
-            .update({
-                "status": "completed",
-                "response_status": response.status_code,
-                "response_body": body_json,
-            })
-            .eq("key", idem_key)
-            .execute()
-        )
+        # A04-MED2: only cache successful responses (2xx) — do not lock out clients on transient errors
+        if 200 <= response.status_code < 300:
+            await (
+                admin.trusted()
+                .table("idempotency_keys")
+                .update({
+                    "status": "completed",
+                    "response_status": response.status_code,
+                    "response_body": body_json,
+                })
+                .eq("key", idem_key)
+                .execute()
+            )
+        else:
+            # Mark as failed so client can retry with same key
+            await (
+                admin.trusted()
+                .table("idempotency_keys")
+                .update({"status": "failed", "response_status": response.status_code})
+                .eq("key", idem_key)
+                .execute()
+            )
 
         # Return a new Response with the captured body
         return Response(
@@ -370,9 +383,9 @@ async def idempotency_middleware(request: Request, call_next: CallNext) -> Respo
 
     except Exception as exc:  # noqa: BLE001
         logger.warning("Idempotency store update failed: %s", exc)
-        # Return the already-consumed response as best effort
+        # Return the already-consumed response as best effort (body_bytes always initialised above)
         return Response(
-            content=body_bytes if "body_bytes" in dir() else b"",
+            content=body_bytes,
             status_code=response.status_code,
             headers=dict(response.headers),
             media_type=response.media_type,

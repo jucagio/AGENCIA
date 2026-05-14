@@ -101,6 +101,14 @@ class SubscriptionService:
         # TODO(Sprint 0.5): real MercadoPago SDK call
         return f"https://www.mercadopago.com/checkout/v1/redirect/stub/{tier}"
 
+    def verify_stripe_signature(self, payload: bytes, signature_header: str) -> None:
+        """Public alias for stateless pre-validation in the webhook endpoint."""
+        return self._verify_stripe_signature(payload, signature_header)
+
+    def verify_mp_signature(self, payload: bytes, x_signature: str, x_request_id: str) -> None:
+        """Public alias for stateless pre-validation in the webhook endpoint."""
+        return self._verify_mp_signature(payload, x_signature, x_request_id)
+
     def _verify_stripe_signature(self, payload: bytes, signature_header: str) -> None:
         """
         Validate Stripe-Signature header (HMAC-SHA256).
@@ -142,11 +150,12 @@ class SubscriptionService:
         if abs(time.time() - ts) > 300:
             raise AuthenticationError("Stripe-Signature timestamp too old (replay attack?)")
 
-        # Compute expected signature
-        signed_payload = f"{timestamp_str}.{payload.decode('utf-8', errors='replace')}"
+        # Compute expected signature — operate on raw bytes (A02-MED1: avoid UTF-8 decode corruption)
+        # Stripe signs: b"{timestamp}.{raw_payload}" where raw_payload is the exact bytes received
+        signed_payload_bytes = timestamp_str.encode("utf-8") + b"." + payload
         expected = hmac.new(
             secret.encode("utf-8"),
-            signed_payload.encode("utf-8"),
+            signed_payload_bytes,
             hashlib.sha256,
         ).hexdigest()
 
@@ -182,7 +191,17 @@ class SubscriptionService:
         if not ts or not v1:
             raise AuthenticationError("Invalid x-signature format")
 
-        signed_payload = f"id:{x_request_id};request-id:{x_request_id};ts:{ts};"
+        # A02-MED2: MercadoPago template is id:{data.id};request-id:{x-request-id};ts:{ts};
+        # data.id comes from the webhook body JSON, NOT from x-request-id (which was a bug)
+        # Ref: https://www.mercadopago.com.ar/developers/es/docs/your-integrations/notifications/webhooks
+        import json as _json  # noqa: PLC0415
+        try:
+            body_json = _json.loads(payload)
+            data_id = str(body_json.get("data", {}).get("id", ""))
+        except (ValueError, AttributeError):
+            data_id = ""
+
+        signed_payload = f"id:{data_id};request-id:{x_request_id};ts:{ts};"
         expected = hmac.new(
             secret.encode("utf-8"),
             signed_payload.encode("utf-8"),
