@@ -13,6 +13,7 @@
 | Indicador | Valor | Señal |
 |-----------|-------|-------|
 | **Sprint actual** | Sprint 0.4 — DevOps & Hardening | 🟡 Prompt listo, trigger pendiente |
+| **Próximo sprint** | Sprint 0.5 — Worker Integration | 🟢 **PROMPT COMPLETO** `036829c` |
 | **Entrega anterior** | 0.3 ✅ `8fe1b01` + security patch `6fca4a8` — 161 tests, 82% cov, B+ Ego | 🟢 Auditado y aprobado |
 | **Días desde inicio** | ~24 días (de ~98 totales) | 🟢 Adelantado |
 | **Bloqueos críticos** | 0 | 🟢 |
@@ -67,6 +68,41 @@
 - [ ] A04-MED1: Idempotency UNIQUE constraint en DB (race condition TOCTOU)
 - [ ] A11-MED1: httpx.AsyncClient compartido via lifespan (actualmente por llamada)
 - [ ] D8 (Ego): Webhook dedup por event.id Stripe (double-processing risk)
+
+---
+
+### 🚀 Entrega 0.5 — Worker Integration & Real API Calls
+**Owner:** Antigravity (ejecutor) + Cyber Neo + Ego (auditores)
+**Status:** 🟢 **PROMPT COMPLETO Y COMMITADO** — `docs/SPRINT_0_5_PROMPT.md` commit `036829c`
+**Bloqueantes (DeR):**
+  - [ ] Google Cloud Vision API key → Juan Camilo
+  - [ ] Replicate API token → Juan Camilo
+  - [ ] Supabase Storage bucket `/try-ons/` → Jarvis
+
+**Tareas del sprint:**
+- [ ] **T1 Vision Worker** (días 1-2)
+  - [ ] POST /api/v1/body-analysis implementado con Google Vision API
+  - [ ] Claude post-processing: labels → body_type, skin_tone, color_season
+  - [ ] Response JSON matches DESIGN_SYSTEM.md spec
+  - [ ] SSRF validation (AnyHttpUrl)
+  - [ ] Tests: ≥85% coverage
+- [ ] **T2 Replicate Worker** (días 3-4)
+  - [ ] POST /api/v1/try-ons implementado con Replicate API
+  - [ ] Supabase Storage signed URLs (24h válidas)
+  - [ ] SHA256 caching para evitar reprocessing
+  - [ ] AI insights generados por Claude
+  - [ ] Tests: ≥85% coverage
+- [ ] **T3 Claude Worker** (días 5-6)
+  - [ ] POST /api/v1/recommendations con Claude Opus
+  - [ ] JSON parsing: 3 outfits con items array + why_it_works
+  - [ ] Histórico de preferences respetado
+  - [ ] Tests: ≥85% coverage
+- [ ] **Integration test end-to-end** (día 6)
+  - [ ] POST /try-ons → 202 → polling GET /try-ons/{id} → status=completed
+  - [ ] Rate limiting respetado en workers
+- [ ] **Docs** (días 5-7)
+  - [ ] `docs/WORKERS_IMPLEMENTATION.md` — setup, debugging, credentials
+  - [ ] Config example: `.env.example` con placeholders
 
 ---
 
@@ -217,6 +253,13 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
 - Erik desbloqueado con referencia completa para mockups S04–S11
 - Brook desbloqueado con equivalencias Flutter de todos los componentes
 - 5 decisiones de UX documentadas (D1–D5) pendientes de Juan Camilo
+- **SPRINT 0.5 PROMPT COMPLETO Y COMMITADO** `036829c`:
+  - T1 Vision Worker: Google Vision API + Claude body analysis
+  - T2 Replicate Worker: Virtual try-on generation + signed URLs
+  - T3 Claude Worker: AI outfit recommendations
+  - JSON schemas exactos para Erik/Brook
+  - SSRF, error handling, rate limiting especificados
+  - Definition of Done (8 puntos) + DeR (bloqueantes: credenciales GCV, Replicate, bucket S3)
 
 ### 2026-05-15
 - Sprint 0.3 completado: commit `8fe1b01` (161 tests, 82% cov)
