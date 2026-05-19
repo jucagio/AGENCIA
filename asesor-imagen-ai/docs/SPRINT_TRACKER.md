@@ -2,7 +2,7 @@
 ## Single Source of Truth del estado del proyecto
 
 **Owner:** Jarvis (CEO)
-**Última actualización:** 2026-05-15
+**Última actualización:** 2026-05-18
 **Frecuencia de update:** Cada sesión + post-entregas
 **Cómo leer:** Empieza por "🎯 STATUS HOY" → revisa "🚦 ACCIONES PRÓXIMAS"
 
@@ -14,12 +14,13 @@
 |-----------|-------|-------|
 | **Sprint actual** | Sprint 0.4 — DevOps & Hardening | 🟡 Prompt listo, trigger pendiente |
 | **Entrega anterior** | 0.3 ✅ `8fe1b01` + security patch `6fca4a8` — 161 tests, 82% cov, B+ Ego | 🟢 Auditado y aprobado |
-| **Días desde inicio** | ~21 días (de ~98 totales) | 🟢 Adelantado |
+| **Días desde inicio** | ~24 días (de ~98 totales) | 🟢 Adelantado |
 | **Bloqueos críticos** | 0 | 🟢 |
-| **Decisiones pendientes Juan Camilo** | Aplicar migrations 004+005 a Supabase remote (credenciales) | ⚠️ Pendiente |
-| **Próximo hito** | Junta Estratégica 16 mayo | 📅 Mañana |
+| **Decisiones pendientes Juan Camilo** | Ver sección D1–D5 en UX_SCREENS_PLAN.md | ⚠️ Pendiente |
+| **Design system** | ✅ APROBADO — Aether Luxe (stitch_ai_fit_check_ui.zip) | 🟢 |
+| **Próximo hito** | Sprint 0.4 entrega + Erik mockups S05–S11 | 📅 |
 
-**Resumen 1 línea:** Sprints 0.1 ✅ 0.2 ✅ 0.3 ✅ (161 tests, 82% cov, 0 CRITICAL en Cyber Neo, B+ Ego). **Sprint 0.4 = Rate Limiting + ARQ Pool + Docker + CI/CD + Sentry + PostHog → TRIGGER AHORA.**
+**Resumen 1 línea:** Sprints 0.1✅ 0.2✅ 0.3✅ — Design system Aether Luxe aprobado por Juan Camilo. **Sprint 0.4 (DevOps) + Erik (mockups restantes S05–S11) en paralelo.**
 
 **Commits verificados:**
 - `5eeb41b` — Sprint 0.1 Foundation ✅
@@ -96,17 +97,33 @@
 
 ## 🟦 TRABAJOS PARALELOS (no bloquean Sprint 0)
 
-### 🟣 Erik — Diseño
+### 🟣 Erik — Diseño ← DESBLOQUEADO por design system
 - [x] Sistema de diseño base
 - [x] 5 mockups core (login, register, onboarding x3)
-- [ ] 5 mockups restantes (body, try-on, recos, profile, paywall)
-- [ ] Iconografía custom
-- [ ] Animaciones Lottie key
+- [x] **Design system Aether Luxe APROBADO** — tokens completos en `docs/design-system/DESIGN_SYSTEM.md`
+- [x] **Referencia pantalla Virtual Try-On** — `stitch_ai_fit_check_ui.zip`
+- [ ] **S04B: Loading state** Try-On (animación gradiente pulsante) ← NUEVO, faltaba en prototipo
+- [ ] **S05: My Wardrobe** (galería closet, grid prendas, filtros)
+- [ ] **S06: Style Insights** (análisis cuerpo + color season resultado)
+- [ ] **S07: Body Analysis Upload** (flujo captura foto análisis)
+- [ ] **S08: Collections** (looks guardados, masonry grid)
+- [ ] **S09: Perfil / Settings**
+- [ ] **S10: Paywall / Upgrade to Pro** (tabla tiers, CTAs por plan)
+- [ ] **S11: Estados de error** (skeleton, 404, red, try-on fallido)
+- [ ] Componentes Flutter: GradientButton, UploadZone, ClothingSlot, AIInsightCard
+- [ ] Animaciones Lottie: loading try-on, success, empty states
 
-### 🔵 Brook — Frontend Flutter
+### 🔵 Brook — Frontend Flutter ← tokens listos para implementar
 - [x] Flutter scaffold + Clean Architecture + Riverpod + go_router
-- [ ] Fix 4 issues técnicos (deps conflict, imports, build_runner, theme tokens)
-- [ ] Login + Register screens
+- [ ] **Fix 4 issues técnicos** (deps conflict, imports, build_runner) ← BLOQUEA TODO LO DEMÁS
+- [ ] **Integrar Aether Luxe tokens** en ThemeData Flutter (`AppColors`, `AppTypography`, `AppSpacing`)
+- [ ] **NavigationBar** (móvil 4 tabs) + **NavigationRail** (tablet)
+- [ ] Login + Register screens (con GradientButton, inputs styled)
+- [ ] Componentes base: GradientButton, UploadZone, ClothingSlot, AIInsightCard
+- [ ] Virtual Try-On screen (S04) — post Erik mockups
+- [ ] My Wardrobe screen (S05)
+
+Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (equivalencias Flutter)
 
 ### 🟠 Yang — Inteligencia
 - [x] INTEL_COMPETIDORES_2026.md + 3 personas + 10 micro-influencers
@@ -193,7 +210,15 @@
 
 ## 📝 CHANGELOG
 
-### 2026-05-15 (sesión actual)
+### 2026-05-18 (sesión actual)
+- Juan Camilo aprobó design system **Aether Luxe** (stitch_ai_fit_check_ui.zip)
+- Creado `docs/design-system/DESIGN_SYSTEM.md` — tokens Flutter completos (colors, typography, spacing, shadows, radius, components)
+- Creado `docs/UX_SCREENS_PLAN.md` — inventario 11 pantallas + UX flows detallados
+- Erik desbloqueado con referencia completa para mockups S04–S11
+- Brook desbloqueado con equivalencias Flutter de todos los componentes
+- 5 decisiones de UX documentadas (D1–D5) pendientes de Juan Camilo
+
+### 2026-05-15
 - Sprint 0.3 completado: commit `8fe1b01` (161 tests, 82% cov)
 - Security patch `6fca4a8`: 7 hallazgos Cyber Neo + 2 P0 Ego resueltos
   - SSRF (AnyHttpUrl en image_url wardrobe + body_analysis)
