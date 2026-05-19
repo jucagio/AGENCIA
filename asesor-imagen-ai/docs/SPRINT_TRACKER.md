@@ -12,22 +12,26 @@
 
 | Indicador | Valor | Señal |
 |-----------|-------|-------|
-| **Sprint actual** | Sprint 0.4 — DevOps & Hardening | 🟡 Prompt listo, trigger pendiente |
+| **Sprint actual** | Sprint 0.4 — DevOps & Hardening | 🟢 **TRIGGER READY** |
 | **Próximo sprint** | Sprint 0.5 — Worker Integration | 🟢 **PROMPT COMPLETO** `036829c` |
 | **Entrega anterior** | 0.3 ✅ `8fe1b01` + security patch `6fca4a8` — 161 tests, 82% cov, B+ Ego | 🟢 Auditado y aprobado |
 | **Días desde inicio** | ~24 días (de ~98 totales) | 🟢 Adelantado |
 | **Bloqueos críticos** | 0 | 🟢 |
 | **Decisiones D1-D5** | ✅ APROBADAS 2026-05-18 (938b670) | 🟢 COMPLETE |
 | **Design system** | ✅ APROBADO — Aether Luxe (stitch_ai_fit_check_ui.zip) | 🟢 |
-| **Próximo hito** | Sprint 0.4 entrega + Erik mockups S05–S11 | 📅 |
+| **Environment setup** | ✅ .env.example + ENVIRONMENT_SETUP_GUIDE (4fbd208) | 🟢 **READY** |
+| **Próximo hito** | Sprint 0.4 entrega + Erik mockups S01–S11 | 📅 |
 
-**Resumen 1 línea:** Sprints 0.1✅ 0.2✅ 0.3✅ — Design system Aether Luxe aprobado por Juan Camilo. **Sprint 0.4 (DevOps) + Erik (mockups restantes S05–S11) en paralelo.**
+**Resumen 1 línea:** Sprints 0.1✅ 0.2✅ 0.3✅ — Design system ✅, Environment setup ✅, D1-D5 ✅. **Sprint 0.4 (DevOps) + Erik (S01–S11 design) + Brook (fixes) en paralelo. LISTO PARA COMENZAR.**
 
 **Commits verificados:**
 - `5eeb41b` — Sprint 0.1 Foundation ✅
 - `ded674c` — Sprint 0.2 Data Layer + patch ✅
 - `8fe1b01` — Sprint 0.3 Services & Endpoints ✅
 - `6fca4a8` — Sprint 0.3 Security Patch (Cyber Neo + Ego findings) ✅
+- `938b670` — D1-D5 Decisiones Aprobadas ✅
+- `8db4ee7` — .env.example commit ✅
+- `4fbd208` — ENVIRONMENT_SETUP_GUIDE.md ✅
 
 ---
 
@@ -246,7 +250,7 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
 
 ## 📝 CHANGELOG
 
-### 2026-05-18 (sesión actual) — EXECUTION PLAN COMPLETE
+### 2026-05-18 (sesión actual) — EXECUTION PLAN COMPLETE ✅ READY TO START
 - Juan Camilo aprobó design system **Aether Luxe** (stitch_ai_fit_check_ui.zip)
 - Creado `docs/design-system/DESIGN_SYSTEM.md` — tokens Flutter completos (colors, typography, spacing, shadows, radius, components)
 - Creado `docs/UX_SCREENS_PLAN.md` — inventario 11 pantallas + UX flows detallados
@@ -268,10 +272,24 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
   - TRIGGER_BROOK_FLUTTER_FIXES.md — 4 issues críticos, 48h deadline
   - PREP_ERIK_DESIGN.md — 11 screens S01-S11, S04B nuevo (loading state)
   - SETUP_SUPABASE_BUCKET.md — 5 min para crear bucket /try-ons/
-- **EVALUATION COMPLETA**: Backend ready ✅, Frontend bloqueado (4 issues), Design awaiting D1-D5, Timeline crítica a launch
-- Erik desbloqueado para diseñar S04B + S06-S07 + S11 (no D1-D5 dependency)
-- Brook tiene 4 issues específicos con instrucciones exactas de fix
-- Antigravity listo para Sprint 0.4 (rate limiting prerequisito de S0.5)
+- **ENVIRONMENT SETUP COMPLETE** `8db4ee7` + `4fbd208`:
+  - `.env.example` — all config variables with placeholders for dev/prod
+  - `ENVIRONMENT_SETUP_GUIDE.md` — PATH A (mock workers) + PATH B (real APIs)
+  - Teams can now: copy .env.example → .env, set FEATURE_MOCK_WORKERS=true
+  - Development with mock credentials (0 API costs), swap to real credentials when Juan Camilo provides them
+  - No code changes needed to switch between mock and real APIs
+- **DECISIONES_APROBADAS.md** `938b670` — Official D1-D5 decision record:
+  - D1: Dual app name ("AI Fit Check" + "Tu Asesor de Imagen Confiable")
+  - D2: Hybrid try-on flow (upload prominent + wardrobe optional)
+  - D3: Triggered body analysis (soft Day 1, strong Day 7)
+  - D4: Hybrid free tier (1/day preview + $9.99/$19.99 paid tiers)
+  - D5: Native social sharing (Instagram Stories + WhatsApp + referral)
+- **NOTIFICACION_ERIK_DESBLOQUEADO.md** — Erik unblocked to design S01-S11:
+  - Can start now: S04B (loading state), S06-S07 (style insights), S11 (errors)
+  - Blocked on D1-D5: S05, S08, S09, S10 — **NOW READY** as decisions approved
+  - Timeline: 6 screens Days 1-2, 5 screens Days 3-6 (7-day delivery)
+- **STATUS FINAL**: Backend ready ✅, Frontend 4 issues identified with fixes, Design unblocked ✅, Environment setup complete ✅
+- **LISTO PARA COMENZAR** — todos los teams tienen todo lo que necesitan. Antigravity (Sprint 0.4), Brook (fixes + design tokens), Erik (11 screens), Juan Camilo (sign 5 decisions + credentials)
 
 ### 2026-05-15
 - Sprint 0.3 completado: commit `8fe1b01` (161 tests, 82% cov)
@@ -296,7 +314,7 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
 
 ---
 
-**Tracker actualizado a:** 2026-05-15
+**Tracker actualizado a:** 2026-05-18 — READY TO START SPRINTS 0.4-0.5
 **Próximo update:** Post Sprint 0.4 entrega
 
 > **Cómo usar este tracker:**
