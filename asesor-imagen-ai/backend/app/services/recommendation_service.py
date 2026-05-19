@@ -75,8 +75,12 @@ class RecommendationService:
         except Exception as exc:  # noqa: BLE001
             logger.warning("Usage counter increment failed: %s", exc)
 
-        # TODO(Sprint 0.5): enqueue claude_worker
-        # await arq_pool.enqueue_job("generate_reco_claude", str(user_id), str(reco.id))
+        # Enqueue claude_worker
+        from arq import create_pool  # noqa: PLC0415
+        from arq.connections import RedisSettings  # noqa: PLC0415
+
+        pool = await create_pool(RedisSettings.from_dsn(settings.REDIS_URL))
+        await pool.enqueue_job("generate_reco_claude", str(user_id), str(reco.id))
 
         logger.info("Recommendation queued: reco_id=%s user_id=%s", reco.id, user_id)
 

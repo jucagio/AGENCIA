@@ -101,9 +101,11 @@ class Settings(BaseSettings):
     # -------------------------------------------------------------------------
     # External AI APIs
     # -------------------------------------------------------------------------
+    GOOGLE_CLOUD_VISION_API_KEY: str | None = None
     GOOGLE_VISION_CREDENTIALS: str | None = None
+    VISION_BATCH_SIZE: int = 5
     REPLICATE_API_TOKEN: str = ""
-    REPLICATE_MODEL_VERSION: str = ""  # pinned per ADR-004 (cache key component)
+    REPLICATE_MODEL_VERSION: str = "replicate/replicate/tryon"  # pinned per ADR-004
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-opus-4-7"
 

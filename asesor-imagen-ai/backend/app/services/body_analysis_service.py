@@ -70,8 +70,15 @@ class BodyAnalysisService:
         except Exception as exc:  # noqa: BLE001
             logger.warning("Usage counter increment failed: %s", exc)
 
-        # TODO(Sprint 0.5): enqueue vision_worker
-        # await arq_pool.enqueue_job("vision_analyze_body", str(analysis.id), image_url or "")
+        # Enqueue vision_worker
+        from arq import create_pool  # noqa: PLC0415
+        from arq.connections import RedisSettings  # noqa: PLC0415
+
+        from app.config import get_settings  # noqa: PLC0415
+
+        settings = get_settings()
+        pool = await create_pool(RedisSettings.from_dsn(settings.REDIS_URL))
+        await pool.enqueue_job("vision_analyze_body", str(analysis.id), image_url or "")
 
         logger.info("Body analysis queued: analysis_id=%s user_id=%s", analysis.id, user_id)
 

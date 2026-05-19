@@ -62,8 +62,15 @@ class WardrobeService:
 
         item = await self._repo.create(user_id=user_id, data=payload)
 
-        # TODO(Sprint 0.5): enqueue vision_worker for auto-tagging
-        # await arq_pool.enqueue_job("vision_tag_wardrobe", str(item.id), item.image_url)
+        # Enqueue vision_worker for auto-tagging
+        from arq import create_pool  # noqa: PLC0415
+        from arq.connections import RedisSettings  # noqa: PLC0415
+
+        from app.config import get_settings  # noqa: PLC0415
+
+        settings = get_settings()
+        pool = await create_pool(RedisSettings.from_dsn(settings.REDIS_URL))
+        await pool.enqueue_job("vision_tag_wardrobe", str(item.id), item.image_url)
 
         return item
 

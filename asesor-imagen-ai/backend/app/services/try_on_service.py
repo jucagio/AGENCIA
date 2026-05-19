@@ -115,8 +115,12 @@ class TryOnService:
         except Exception as exc:  # noqa: BLE001
             logger.warning("Usage counter increment failed: %s", exc)
 
-        # TODO(Sprint 0.5): enqueue replicate_worker
-        # await arq_pool.enqueue_job("process_try_on", str(try_on.id), content_hash)
+        # Enqueue replicate_worker
+        from arq import create_pool  # noqa: PLC0415
+        from arq.connections import RedisSettings  # noqa: PLC0415
+
+        pool = await create_pool(RedisSettings.from_dsn(settings.REDIS_URL))
+        await pool.enqueue_job("process_try_on", str(try_on.id), content_hash)
 
         logger.info("Try-on created: try_on_id=%s user_id=%s", try_on.id, user_id)
 
