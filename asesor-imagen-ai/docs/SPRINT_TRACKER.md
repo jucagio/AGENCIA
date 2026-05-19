@@ -17,7 +17,7 @@
 | **Entrega anterior** | 0.3 ✅ `8fe1b01` + security patch `6fca4a8` — 161 tests, 82% cov, B+ Ego | 🟢 Auditado y aprobado |
 | **Días desde inicio** | ~24 días (de ~98 totales) | 🟢 Adelantado |
 | **Bloqueos críticos** | 0 | 🟢 |
-| **Decisiones pendientes Juan Camilo** | Ver sección D1–D5 en UX_SCREENS_PLAN.md | ⚠️ Pendiente |
+| **Decisiones D1-D5** | ✅ APROBADAS 2026-05-18 (938b670) | 🟢 COMPLETE |
 | **Design system** | ✅ APROBADO — Aether Luxe (stitch_ai_fit_check_ui.zip) | 🟢 |
 | **Próximo hito** | Sprint 0.4 entrega + Erik mockups S05–S11 | 📅 |
 
