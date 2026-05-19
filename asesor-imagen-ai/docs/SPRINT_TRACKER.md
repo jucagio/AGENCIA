@@ -203,16 +203,16 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
 
 ## 🚦 ACCIONES PRÓXIMAS (en orden)
 
-| # | Acción | Owner | Trigger |
-|---|--------|-------|---------|
-| 1 | **🔴 TRIGGER Antigravity Sprint 0.4** (`docs/SPRINT_0_4_PROMPT.md`) | Juan Camilo | AHORA |
-| 2 | Audit Cyber Neo + Ego sobre 0.4 | Jarvis lanza | Cuando 0.4 entregue |
-| 3 | Junta Estratégica 16 mayo | Todo el equipo | Mañana |
-| 4 | Aplicar migrations 004+005 a Supabase remote | Juan Camilo | Con credenciales |
-| 5 | Verificar refresh_token_rotation en Supabase dashboard | Juan Camilo | Sprint 0.4 |
-| 6 | Re-trigger Erik (5 mockups) | Jarvis | Rate limit resuelto |
-| 7 | Re-trigger Brook (4 issues Flutter) | Jarvis | Post Erik |
-| 8 | Re-trigger Cinthya + Alejo | Jarvis | Rate limit resuelto |
+| # | Acción | Owner | Status | Trigger |
+|---|--------|-------|--------|---------|
+| 1 | **🟢 TRIGGER Antigravity Sprint 0.4** (`docs/TRIGGER_ANTIGRAVITY_SPRINT_0_4.md`) | Jarvis | ✅ Ready | Today 10 AM junta |
+| 2 | **🟢 TRIGGER Brook Flutter fixes** (`docs/TRIGGER_BROOK_FLUTTER_FIXES.md`) | Jarvis | ✅ Ready | Today post-junta |
+| 3 | **🟢 PREP Erik design S01-S11** (`docs/PREP_ERIK_DESIGN.md`) | Jarvis | ✅ Ready | Today (Erik starts S04B) |
+| 4 | **🟢 SETUP Supabase bucket `/try-ons/`** (`docs/SETUP_SUPABASE_BUCKET.md`) | Jarvis | ✅ Ready | Today (5 min) |
+| 5 | **🔴 Juan Camilo: D1-D5 decisiones + credenciales** (`docs/JUAN_CAMILO_ACCIONES_CRITICAS.md`) | Juan Camilo | ⏳ BLOCKED | Today-Mañana |
+| 6 | Audit Cyber Neo + Ego sobre 0.4 | Jarvis lanza | ⏳ Pending | Cuando 0.4 entregue |
+| 7 | Junta Estratégica 16 mayo | Todo el equipo | ⏳ Pending | Mañana |
+| 8 | Re-trigger Cinthya + Alejo (post-rate-limiting) | Jarvis | ⏳ Blocked | Sprint 0.4 done |
 
 ---
 
@@ -246,13 +246,10 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
 
 ## 📝 CHANGELOG
 
-### 2026-05-18 (sesión actual)
+### 2026-05-18 (sesión actual) — EXECUTION PLAN COMPLETE
 - Juan Camilo aprobó design system **Aether Luxe** (stitch_ai_fit_check_ui.zip)
 - Creado `docs/design-system/DESIGN_SYSTEM.md` — tokens Flutter completos (colors, typography, spacing, shadows, radius, components)
 - Creado `docs/UX_SCREENS_PLAN.md` — inventario 11 pantallas + UX flows detallados
-- Erik desbloqueado con referencia completa para mockups S04–S11
-- Brook desbloqueado con equivalencias Flutter de todos los componentes
-- 5 decisiones de UX documentadas (D1–D5) pendientes de Juan Camilo
 - **SPRINT 0.5 PROMPT COMPLETO Y COMMITADO** `036829c`:
   - T1 Vision Worker: Google Vision API + Claude body analysis
   - T2 Replicate Worker: Virtual try-on generation + signed URLs
@@ -260,6 +257,21 @@ Referencia implementación: `docs/design-system/DESIGN_SYSTEM.md` sección 9 (eq
   - JSON schemas exactos para Erik/Brook
   - SSRF, error handling, rate limiting especificados
   - Definition of Done (8 puntos) + DeR (bloqueantes: credenciales GCV, Replicate, bucket S3)
+- **EJECUCIÓN SPRINT 0.5 COMPLETAMENTE DOCUMENTADA** `1839f28`:
+  - JUAN_CAMILO_ACCIONES_CRITICAS.md — 2-3h, D1-D5 + credenciales
+  - DECISIONES_CRITICAS_UX.md — 5 decisiones con recomendaciones comerciales
+  - BLOCKERS_BROOK_FLUTTER.md — 4 issues con fixes específicas (48h deadline)
+  - ROADMAP_7_DIAS.md — day-by-day 4 parallel tracks (Backend, Frontend, Design, Commercial)
+  - EJECUCIÓN_SPRINT_0_5.md — master navigator + índice completo
+- **TRIGGERS LISTOS PARA EJECUTAR** `f38d661`:
+  - TRIGGER_ANTIGRAVITY_SPRINT_0_4.md — 7 tareas DevOps, rate limiting BLOQUEANTE
+  - TRIGGER_BROOK_FLUTTER_FIXES.md — 4 issues críticos, 48h deadline
+  - PREP_ERIK_DESIGN.md — 11 screens S01-S11, S04B nuevo (loading state)
+  - SETUP_SUPABASE_BUCKET.md — 5 min para crear bucket /try-ons/
+- **EVALUATION COMPLETA**: Backend ready ✅, Frontend bloqueado (4 issues), Design awaiting D1-D5, Timeline crítica a launch
+- Erik desbloqueado para diseñar S04B + S06-S07 + S11 (no D1-D5 dependency)
+- Brook tiene 4 issues específicos con instrucciones exactas de fix
+- Antigravity listo para Sprint 0.4 (rate limiting prerequisito de S0.5)
 
 ### 2026-05-15
 - Sprint 0.3 completado: commit `8fe1b01` (161 tests, 82% cov)
