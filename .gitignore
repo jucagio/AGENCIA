@@ -22,6 +22,10 @@ eggs/
 .eggs/
 lib/
 lib64/
+# Flutter source must not be ignored (override for Flutter projects)
+!asesor-imagen-ai/frontend/lib/
+!teclado-senias/frontend/lib/
+!teclado-senias/frontend_new/lib/
 parts/
 sdist/
 var/
