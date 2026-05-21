@@ -1,0 +1,31 @@
+# Railway deployment config — Asesor de Imagen AI Backend
+# Sprint 0.5 MVP — Sasha
+#
+# Deploy:
+#   railway login
+#   railway link            # link to project (interactive)
+#   railway up              # build & deploy
+#
+# Set env vars in Railway dashboard:
+#   - ENVIRONMENT=production
+#   - SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+#   - SUPABASE_AVATARS_BUCKET=avatars
+#   - SUPABASE_WARDROBE_BUCKET=wardrobe
+#   - SUPABASE_TRYONS_BUCKET=tryons
+#   - REDIS_URL  (Upstash recommended: rediss://...)
+#   - ALLOWED_ORIGINS  (Flutter app domains, no wildcards)
+#   - SECRET_KEY  (>= 32 chars, NOT the dev placeholder)
+#   - REPLICATE_API_TOKEN, ANTHROPIC_API_KEY, GOOGLE_CLOUD_VISION_API_KEY
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "asesor-imagen-ai/backend/Dockerfile"
+buildContext = "asesor-imagen-ai/backend"
+
+[deploy]
+# uvicorn binds to $PORT (Railway injects this)
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

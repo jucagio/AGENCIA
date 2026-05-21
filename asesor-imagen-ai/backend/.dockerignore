@@ -1,0 +1,49 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Virtualenvs
+venv/
+.venv/
+env/
+
+# Secrets & local config (NEVER bake into image)
+.env
+.env.*
+!.env.example
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Tests & dev artifacts
+tests/
+pytest_error.txt
+commit_msg.txt
+htmlcov/
+.coverage
+coverage.xml
+
+# Docs (no need in runtime image)
+docs/
+README.md
+*.md
+
+# Build artifacts
+build/
+dist/
+*.log

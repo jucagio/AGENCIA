@@ -55,6 +55,13 @@ class Settings(BaseSettings):
     # Placeholder. Implementación real en 0.3 con slowapi+Redis
     RATE_LIMIT_PER_MINUTE: int = Field(default=60, ge=1, le=10000)
 
+    # Rate Limiting (Sprint A1 — ADR-007)
+    # Master switch — when False, the rate_limit decorator is a no-op (safe rollout).
+    FEATURE_RATE_LIMIT_ENABLED: bool = False
+    # Algorithm: "fixed-window" is cheap (1 INCR per req). "sliding-window" is
+    # smoother but ~2x Redis ops. ADR-007 default = fixed-window.
+    RATE_LIMIT_STRATEGY: Literal["fixed-window", "sliding-window"] = "fixed-window"
+
     # -------------------------------------------------------------------------
     # Custom JWT (LEGACY - to be removed in Entrega 0.2 per ADR-001)
     # -------------------------------------------------------------------------
@@ -84,14 +91,45 @@ class Settings(BaseSettings):
     ARQ_QUEUE_NAME: str = "asesor_imagen_jobs"
 
     # -------------------------------------------------------------------------
+    # Feature flags (Sprint 0.5 T7)
+    # -------------------------------------------------------------------------
+    # When true, workers return canned responses instead of calling Vision /
+    # Replicate / Anthropic. Used for local dev (PATH A) and CI tests so we
+    # don't burn credits or require external creds.
+    FEATURE_MOCK_WORKERS: bool = False
+
+    # PRO inference timeout (seconds). If the FASHN "quality" tier exceeds
+    # this, replicate_worker falls back to STD ("balanced"). See T4.
+    FASHN_PRO_TIMEOUT_SECONDS: float = 15.0
+
+    # -------------------------------------------------------------------------
     # Idempotency (ADR-003)
     # -------------------------------------------------------------------------
     IDEMPOTENCY_TTL_SECONDS: int = 86400  # 24h
 
     # -------------------------------------------------------------------------
     # Storage (ADR-005 — Supabase Storage + Cloudflare R2)
+    # 3 buckets separados (MVP, Sprint 0.5):
+    #   - avatars: foto del usuario (privado, RLS per-user)
+    #   - wardrobe: prendas del closet (privado, RLS per-user)
+    #   - tryons: resultado final de try-on (privado con signed URL, RLS per-user)
+    # Cliente sube directo (ADR-005); backend NUNCA recibe UploadFile.
     # -------------------------------------------------------------------------
-    SUPABASE_STORAGE_BUCKET: str = "user-uploads"
+    AVATARS_BUCKET: str = Field(
+        default="avatars",
+        validation_alias="SUPABASE_AVATARS_BUCKET",
+        description="Supabase Storage bucket for user avatars",
+    )
+    WARDROBE_BUCKET: str = Field(
+        default="wardrobe",
+        validation_alias="SUPABASE_WARDROBE_BUCKET",
+        description="Supabase Storage bucket for wardrobe items",
+    )
+    TRYONS_BUCKET: str = Field(
+        default="tryons",
+        validation_alias="SUPABASE_TRYONS_BUCKET",
+        description="Supabase Storage bucket for try-on results",
+    )
     R2_ACCOUNT_ID: str = ""
     R2_ACCESS_KEY_ID: str = ""
     R2_SECRET_ACCESS_KEY: str = ""
@@ -106,6 +144,8 @@ class Settings(BaseSettings):
     VISION_BATCH_SIZE: int = 5
     REPLICATE_API_TOKEN: str = ""
     REPLICATE_MODEL_VERSION: str = "replicate/replicate/tryon"  # pinned per ADR-004
+    # FASHN tryon model version hash (Replicate). Pinned for reproducibility (ADR-004).
+    FASHN_MODEL_VERSION: str = "zs36x4rfa1rmc0cryry84mk6wr"
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-opus-4-7"
 
