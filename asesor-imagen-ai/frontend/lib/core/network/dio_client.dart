@@ -42,9 +42,14 @@ class DioClient {
   Interceptor _authInterceptor() {
     return InterceptorsWrapper(
       onRequest: (options, handler) {
-        final session = Supabase.instance.client.auth.currentSession;
-        if (session != null) {
-          options.headers['Authorization'] = 'Bearer ${session.accessToken}';
+        // Guard: Supabase puede no estar inicializado en demo mode
+        try {
+          final session = Supabase.instance.client.auth.currentSession;
+          if (session != null) {
+            options.headers['Authorization'] = 'Bearer ${session.accessToken}';
+          }
+        } catch (_) {
+          // Demo mode — sin Supabase, continúa sin header de auth
         }
         handler.next(options);
       },
@@ -61,7 +66,7 @@ class DioClient {
               return handler.resolve(retryResponse);
             }
           } catch (_) {
-            // Refresh falló → dejar que el error propague
+            // Refresh falló o Supabase no inicializado — dejar que el error propague
           }
         }
         handler.next(error);

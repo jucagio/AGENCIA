@@ -13,14 +13,27 @@ Future<void> main() async {
   // Load environment variables
   await dotenv.load(fileName: '.env');
 
-  // Initialize Supabase
-  await Supabase.initialize(
-    url: Env.supabaseUrl,
-    anonKey: Env.supabaseAnonKey,
-  );
+  // Initialize Supabase — gracefully handle placeholder/invalid URLs
+  // App runs in demo mode if Supabase credentials are missing or placeholder.
+  final supabaseUrl = Env.supabaseUrl;
+  final supabaseKey = Env.supabaseAnonKey;
+  final isPlaceholder = supabaseUrl.contains('placeholder') ||
+      supabaseKey.contains('placeholder');
+
+  if (!isPlaceholder) {
+    try {
+      await Supabase.initialize(
+        url: supabaseUrl,
+        anonKey: supabaseKey,
+      );
+    } catch (e) {
+      debugPrint('[main] Supabase init failed (demo mode active): $e');
+    }
+  } else {
+    debugPrint('[main] Supabase credentials are placeholders — running in demo mode');
+  }
 
   runApp(
-    // ProviderScope wraps the entire app — required for Riverpod
     const ProviderScope(
       child: AsesorImagenApp(),
     ),
