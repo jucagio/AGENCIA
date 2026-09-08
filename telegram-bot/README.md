@@ -1,5 +1,7 @@
 # Agencia Bot — Bot de Telegram para el Equipo de Agentes Claude
 
+**Agencia Bot** — bot de Telegram que conecta con el equipo de agentes IA de la Agencia (Jarvis, Sasha, Jade, etc.), con respuesta en tiempo real y control de acceso.
+
 Bot de Telegram que conecta directamente con el equipo de agentes de la Agencia. Escribe `@jarvis`, `@sasha` o cualquier otro agente desde Telegram y obtienes respuesta en tiempo real con streaming, historial de conversación por agente y control de acceso para que solo tú puedas usarlo.
 
 ---

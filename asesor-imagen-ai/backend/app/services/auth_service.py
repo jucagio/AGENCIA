@@ -26,10 +26,27 @@ logger = logging.getLogger(__name__)
 
 
 class AuthService:
-    """Wraps Supabase GoTrue REST API for auth operations."""
+    """Wraps Supabase GoTrue REST API for auth operations.
+
+    When SUPABASE_URL is empty and ENVIRONMENT != production, delegates to
+    MockAuthService so local MVP testing works without a Supabase project.
+    """
 
     def __init__(self) -> None:
         self._settings = get_settings()
+        self._mock = None
+        if not self._settings.SUPABASE_URL:
+            if self._settings.is_production:
+                raise RuntimeError(
+                    "SUPABASE_URL is required in production. "
+                    "Refusing to start AuthService."
+                )
+            # Lazy import to avoid circular dependency at module load time.
+            from app.services.mock_auth_service import MockAuthService  # noqa: PLC0415
+            self._mock = MockAuthService()
+            self._base = ""
+            self._headers = {}
+            return
         self._base = f"{self._settings.SUPABASE_URL}/auth/v1"
         self._headers = {
             "apikey": self._settings.SUPABASE_ANON_KEY,
@@ -42,6 +59,8 @@ class AuthService:
         Returns a TokenResponse on success (201 from GoTrue).
         Raises AppValidationError on duplicate email or weak password.
         """
+        if self._mock is not None:
+            return await self._mock.register(req)
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(
                 f"{self._base}/signup",
@@ -58,6 +77,8 @@ class AuthService:
 
     async def login(self, req: LoginRequest) -> TokenResponse:
         """Authenticate via Supabase GoTrue password grant."""
+        if self._mock is not None:
+            return await self._mock.login(req)
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(
                 f"{self._base}/token?grant_type=password",
@@ -72,6 +93,8 @@ class AuthService:
 
     async def refresh(self, refresh_token: str) -> TokenResponse:
         """Exchange a refresh_token for a new access_token."""
+        if self._mock is not None:
+            return await self._mock.refresh(refresh_token)
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(
                 f"{self._base}/token?grant_type=refresh_token",

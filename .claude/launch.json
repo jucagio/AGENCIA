@@ -12,6 +12,21 @@
       "runtimeExecutable": "python",
       "runtimeArgs": [".claude/agent-runner.py"],
       "port": null
+    },
+    {
+      "name": "MAPER Offers",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
+      "runtimeArgs": ["vite", "--port", "5175", "--host"],
+      "cwd": "C:\\Users\\PCC\\Documents\\JUAN CAMILO GIL\\PERSONAL\\MASTER IA\\Proyectos\\ASISTENTE DE OFERTAS",
+      "port": 5175
+    },
+    {
+      "name": "maper-rsm-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "C:\\Users\\PCC\\Documents\\JUAN CAMILO GIL\\PERSONAL\\PROGRAMACIÓN\\MAPER\\maper-rsm",
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

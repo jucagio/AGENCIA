@@ -86,6 +86,16 @@ def validate_supabase_token(token: str) -> dict:  # type: ignore[type-arg]
 
     settings = get_settings()
 
+    # Mock auth path — only when SUPABASE_URL is empty AND not in production.
+    # The mock_auth_service guards prod itself, but we double-check here.
+    if not settings.SUPABASE_URL and not settings.is_production:
+        from app.services.mock_auth_service import (  # noqa: PLC0415
+            is_mock_token,
+            validate_mock_token,
+        )
+        if is_mock_token(token):
+            return validate_mock_token(token)
+
     try:
         client = _get_jwks_client()
         signing_key = client.get_signing_key_from_jwt(token)

@@ -1,0 +1,90 @@
+# ============================================================
+# RAILWAY ENVIRONMENT VARIABLES — Asesor de Imagen AI
+# Cinthya — Automatización — 2026-05-22
+# ============================================================
+#
+# INSTRUCCIONES:
+#   Railway Dashboard → Project → Variables → "+ New Variable"
+#   Pega cada NAME + VALUE abajo. NO incluyas comillas.
+#
+# NUNCA commits este archivo con valores reales. Es una plantilla.
+# ============================================================
+
+
+# ── CORE ────────────────────────────────────────────────────
+ENVIRONMENT=production
+
+# Genera con: python -c "import secrets; print(secrets.token_hex(32))"
+# Mínimo 32 chars. JAMÁS usar el placeholder de dev.
+SECRET_KEY=<GENERAR-32-CHARS-RANDOM>
+
+
+# ── SUPABASE ─────────────────────────────────────────────────
+# Fuente: Sasha → Supabase Dashboard → Project Settings → API
+SUPABASE_URL=https://<tu-proyecto>.supabase.co
+SUPABASE_ANON_KEY=<eyJ...anon key...>
+SUPABASE_SERVICE_ROLE_KEY=<eyJ...service role key — SECRETO>
+
+# Buckets de Storage (ya definidos en migración 005)
+SUPABASE_AVATARS_BUCKET=avatars
+SUPABASE_WARDROBE_BUCKET=wardrobe
+SUPABASE_TRYONS_BUCKET=tryons
+
+
+# ── REDIS ────────────────────────────────────────────────────
+# Opción A (recomendada — Railway add-on):
+#   Railway Dashboard → Project → "+ New" → "Redis"
+#   Railway inyecta REDIS_URL automáticamente. No hay que copiarla.
+#
+# Opción B (Upstash, si se prefiere externo):
+#   https://upstash.com → crear DB → copiar "Redis URL (TLS)"
+#   Formato: rediss://:password@host:port
+REDIS_URL=<Railway lo inyecta si usas el add-on, o pega URL de Upstash>
+
+
+# ── CORS ─────────────────────────────────────────────────────
+# URL pública de Railway (disponible luego del primer deploy)
+# Formato: https://asesor-imagen-ai-production.up.railway.app
+# Si Flutter corre en web, agrega también su dominio.
+# NO usar wildcard "*" en producción.
+ALLOWED_ORIGINS=https://asesor-imagen-ai-production.up.railway.app
+
+
+# ── FEATURE FLAGS ────────────────────────────────────────────
+# Controlan comportamiento en producción sin redeployar.
+# FEATURE_MOCK_WORKERS=false → usar workers ARQ reales (no mocks)
+# FEATURE_RATE_LIMIT_ENABLED=true → activar slowapi + Redis rate limiting
+FEATURE_MOCK_WORKERS=false
+FEATURE_RATE_LIMIT_ENABLED=true
+
+
+# ── FASE 2 — APIs de IA (pendientes hasta que llegue Fase 2) ─
+# Dejar vacías hasta recibir las keys. El backend usa FEATURE_MOCK_WORKERS
+# como fallback mientras no estén disponibles.
+
+# Replicate — Virtual Try-On (FLUX / IDM-VTON)
+# https://replicate.com → Account → API Tokens
+REPLICATE_API_TOKEN=<pendiente Fase 2>
+
+# Anthropic — Recomendaciones IA (Claude Haiku)
+# https://console.anthropic.com → API Keys
+ANTHROPIC_API_KEY=<pendiente Fase 2>
+
+# Google Cloud Vision — Análisis de prendas (opcional)
+# https://console.cloud.google.com → APIs & Services → Credentials
+GOOGLE_CLOUD_VISION_API_KEY=<si se necesita Fase 2>
+
+
+# ── NOTAS OPERACIONALES ──────────────────────────────────────
+# 1. Railway Workers: si se despliega el ARQ worker como servicio separado,
+#    usa las mismas variables SUPABASE_* y REDIS_URL en ese servicio.
+#
+# 2. /health → liveness probe (sin deps). Siempre 200 si el proceso está up.
+#    /ready  → readiness probe. Verifica Redis + Supabase + ARQ queue.
+#    Railway usa /health (configurado en railway.toml healthcheckPath).
+#
+# 3. Docs deshabilitados en producción (ENVIRONMENT=production).
+#    Para debugging puntual, cambiar temporalmente a ENVIRONMENT=staging.
+#
+# 4. SECRET_KEY nunca debe coincidir con el valor de .env de desarrollo.
+# ============================================================

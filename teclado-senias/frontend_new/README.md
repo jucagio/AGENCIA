@@ -1,6 +1,6 @@
-# frontend_new
+# Teclado de Señas — Frontend
 
-A new Flutter project.
+**Teclado de Señas (Frontend)** — app Flutter que traduce lenguaje de señas a texto/voz para facilitar la comunicación de personas sordomudas.
 
 ## Getting Started
 

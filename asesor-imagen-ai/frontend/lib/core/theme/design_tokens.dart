@@ -43,6 +43,26 @@ abstract final class DesignTokens {
   );
 
   // ---------------------------------------------------------------------------
+  // Stitch Design Colors — validados por Erik (Sprint 0.5 Stitch)
+  // ---------------------------------------------------------------------------
+  static const Color stitchPrimaryBlue = Color(0xFF0058BE);
+  static const Color stitchViolet = Color(0xFF9466FF);
+  static const Color stitchVioletLight = Color(0xFFE9DDFF);
+  static const Color stitchActiveBg = Color(0xFFEBF2FF);
+  static const Color stitchDashedBorder = Color(0xFFC6C6CD);
+  static const Color stitchSurface = Color(0xFFF9FAFB);
+  static const Color stitchTextPrimary = Color(0xFF111827);
+  static const Color stitchTextSecondary = Color(0xFF6B7280);
+  static const Color stitchTextLabel = Color(0xFF374151);
+  static const Color stitchBorder = Color(0xFFE5E7EB);
+
+  static const LinearGradient stitchGradient = LinearGradient(
+    colors: [stitchPrimaryBlue, stitchViolet],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  // ---------------------------------------------------------------------------
   // Typography — Inter / system font
   // ---------------------------------------------------------------------------
   static const String fontFamily = 'Inter';

@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:asesor_imagen_ai/core/routing/router.dart';
 import 'package:asesor_imagen_ai/core/theme/app_theme.dart';
-import 'package:asesor_imagen_ai/core/config/env.dart';
+import 'package:asesor_imagen_ai/core/config/supabase_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables
-  await dotenv.load(fileName: '.env');
-
-  // Initialize Supabase — gracefully handle placeholder/invalid URLs
-  // App runs in demo mode if Supabase credentials are missing or placeholder.
-  final supabaseUrl = Env.supabaseUrl;
-  final supabaseKey = Env.supabaseAnonKey;
-  final isPlaceholder = supabaseUrl.contains('placeholder') ||
-      supabaseKey.contains('placeholder');
-
-  if (!isPlaceholder) {
-    try {
-      await Supabase.initialize(
-        url: supabaseUrl,
-        anonKey: supabaseKey,
-      );
-    } catch (e) {
-      debugPrint('[main] Supabase init failed (demo mode active): $e');
-    }
-  } else {
-    debugPrint('[main] Supabase credentials are placeholders — running in demo mode');
+  // Load .env file for local development (dotenv values are lowest priority).
+  // In production APK builds (--dart-define-from-file), this file may not
+  // exist — silently skip loading if missing.
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // .env not present in the assets bundle — expected in production builds
+    // where values come from --dart-define-from-file instead.
   }
+
+  // Initialize Supabase via SupabaseConfig.
+  // Priority: dart-define > dotenv > demo mode fallback.
+  await SupabaseConfig.initialize();
 
   runApp(
     const ProviderScope(

@@ -8,65 +8,102 @@
 --   application layer. These policies are the last line of defence
 --   for direct PostgREST client access (e.g., mobile app using
 --   user-scoped JWT directly against the REST API).
+--
+-- IDEMPOTENCY:
+--   Every CREATE POLICY is preceded by DROP POLICY IF EXISTS so that
+--   re-running this migration on a partially-applied database is safe.
+--   ALTER TABLE ... ENABLE ROW LEVEL SECURITY is itself idempotent.
 -- =============================================================
 
 -- profiles
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "profiles_select" ON public.profiles;
 CREATE POLICY "profiles_select" ON public.profiles FOR SELECT USING (auth.uid() = id);
+DROP POLICY IF EXISTS "profiles_insert" ON public.profiles;
 CREATE POLICY "profiles_insert" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+DROP POLICY IF EXISTS "profiles_update" ON public.profiles;
 CREATE POLICY "profiles_update" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+DROP POLICY IF EXISTS "profiles_delete" ON public.profiles;
 CREATE POLICY "profiles_delete" ON public.profiles FOR DELETE USING (auth.uid() = id);
 
 -- subscriptions
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "subscriptions_select" ON public.subscriptions;
 CREATE POLICY "subscriptions_select" ON public.subscriptions FOR SELECT USING (auth.uid() = user_id);
 -- Insert/Update/Delete solo por service_role (bypasses RLS automatically, no need to create policies)
 
 -- wardrobe_items
 ALTER TABLE public.wardrobe_items ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "wardrobe_items_select" ON public.wardrobe_items;
 CREATE POLICY "wardrobe_items_select" ON public.wardrobe_items FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "wardrobe_items_insert" ON public.wardrobe_items;
 CREATE POLICY "wardrobe_items_insert" ON public.wardrobe_items FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "wardrobe_items_update" ON public.wardrobe_items;
 CREATE POLICY "wardrobe_items_update" ON public.wardrobe_items FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "wardrobe_items_delete" ON public.wardrobe_items;
 CREATE POLICY "wardrobe_items_delete" ON public.wardrobe_items FOR DELETE USING (auth.uid() = user_id);
 
 -- body_analysis
 ALTER TABLE public.body_analysis ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "body_analysis_select" ON public.body_analysis;
 CREATE POLICY "body_analysis_select" ON public.body_analysis FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "body_analysis_insert" ON public.body_analysis;
 CREATE POLICY "body_analysis_insert" ON public.body_analysis FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "body_analysis_update" ON public.body_analysis;
 CREATE POLICY "body_analysis_update" ON public.body_analysis FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "body_analysis_delete" ON public.body_analysis;
 CREATE POLICY "body_analysis_delete" ON public.body_analysis FOR DELETE USING (auth.uid() = user_id);
 
 -- try_ons
+-- NOTE: try_ons_update policy is REPLACED in migration 008 with a stricter
+-- service_role-only policy. We keep the user-scoped UPDATE here for the
+-- pre-008 baseline; 008 will DROP and replace it.
 ALTER TABLE public.try_ons ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "try_ons_select" ON public.try_ons;
 CREATE POLICY "try_ons_select" ON public.try_ons FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "try_ons_insert" ON public.try_ons;
 CREATE POLICY "try_ons_insert" ON public.try_ons FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "try_ons_update" ON public.try_ons;
 CREATE POLICY "try_ons_update" ON public.try_ons FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "try_ons_delete" ON public.try_ons;
 CREATE POLICY "try_ons_delete" ON public.try_ons FOR DELETE USING (auth.uid() = user_id);
 
 -- recommendations
 ALTER TABLE public.recommendations ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "recommendations_select" ON public.recommendations;
 CREATE POLICY "recommendations_select" ON public.recommendations FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "recommendations_insert" ON public.recommendations;
 CREATE POLICY "recommendations_insert" ON public.recommendations FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "recommendations_update" ON public.recommendations;
 CREATE POLICY "recommendations_update" ON public.recommendations FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "recommendations_delete" ON public.recommendations;
 CREATE POLICY "recommendations_delete" ON public.recommendations FOR DELETE USING (auth.uid() = user_id);
 
 -- recommendation_items
 ALTER TABLE public.recommendation_items ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "recommendation_items_select" ON public.recommendation_items;
 CREATE POLICY "recommendation_items_select" ON public.recommendation_items FOR SELECT
 USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
+DROP POLICY IF EXISTS "recommendation_items_insert" ON public.recommendation_items;
 CREATE POLICY "recommendation_items_insert" ON public.recommendation_items FOR INSERT
 WITH CHECK (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
+DROP POLICY IF EXISTS "recommendation_items_update" ON public.recommendation_items;
 CREATE POLICY "recommendation_items_update" ON public.recommendation_items FOR UPDATE
 USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()))
 WITH CHECK (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
+DROP POLICY IF EXISTS "recommendation_items_delete" ON public.recommendation_items;
 CREATE POLICY "recommendation_items_delete" ON public.recommendation_items FOR DELETE
 USING (EXISTS (SELECT 1 FROM public.recommendations r WHERE r.id = recommendation_id AND r.user_id = auth.uid()));
 
 -- user_style_profile
 ALTER TABLE public.user_style_profile ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "user_style_profile_select" ON public.user_style_profile;
 CREATE POLICY "user_style_profile_select" ON public.user_style_profile FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "user_style_profile_insert" ON public.user_style_profile;
 CREATE POLICY "user_style_profile_insert" ON public.user_style_profile FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "user_style_profile_update" ON public.user_style_profile;
 CREATE POLICY "user_style_profile_update" ON public.user_style_profile FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "user_style_profile_delete" ON public.user_style_profile;
 CREATE POLICY "user_style_profile_delete" ON public.user_style_profile FOR DELETE USING (auth.uid() = user_id);
 
 -- usage_counters
@@ -74,6 +111,7 @@ CREATE POLICY "user_style_profile_delete" ON public.user_style_profile FOR DELET
 -- restricted to service_role (ARQ worker via increment_usage() stored proc).
 -- This prevents users from zeroing or bypassing their quota limits.
 ALTER TABLE public.usage_counters ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "usage_counters_select" ON public.usage_counters;
 CREATE POLICY "usage_counters_select" ON public.usage_counters FOR SELECT USING (auth.uid() = user_id);
 -- No INSERT/UPDATE/DELETE policies — only service_role (via increment_usage RPC) writes here.
 

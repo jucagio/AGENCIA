@@ -12,6 +12,8 @@ from app.api.deps import AdminDep, CurrentUser
 from app.schemas.common import PaginationMeta, SuccessResponse
 from app.schemas.recommendation import RecommendationResponse
 from app.services.recommendation_service import RecommendationService
+from app.core.rate_limiter import limiter
+from fastapi import Request
 
 router = APIRouter()
 
@@ -44,7 +46,9 @@ async def generate_recommendations(
     response_model=SuccessResponse,
     summary="List recommendation history",
 )
+@limiter.limit("30/hour")
 async def list_recommendations(
+    request: Request,
     user_id: CurrentUser,
     admin: AdminDep,
     page: int = Query(default=1, ge=1),

@@ -55,6 +55,15 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     configure_logging()
 
+    # Dev UX: warn loudly when Supabase credentials are missing — without them,
+    # /api/v1/auth/* and /api/v1/wardrobe/* and /api/v1/try-ons return 500.
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_ROLE_KEY:
+        logger.warning(
+            "SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY empty. "
+            "Auth/wardrobe/try-on endpoints will return 500. "
+            "Complete .env before using in development."
+        )
+
     if settings.is_production:
         settings.assert_production_ready()
 

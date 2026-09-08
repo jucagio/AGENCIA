@@ -85,3 +85,20 @@ Thumbs.db
 # Claude Code
 .claude/mcp-servers/__pycache__/
 .claude/mcp-servers/*.pyc
+
+# Vendored SDK (not our code)
+/flutter/
+
+# Build artifacts / debug logs
+*.apk
+*.log.err
+
+# Sensitive business data, not code
+/FINANZAS PARA CINTHYA/
+
+# Stray/unclear files
+/Manual_Construccion_Sivir_Chalikar.pdf
+/UsersPCCAppDataLocalTempmaper.html
+
+# Duplicate backup, identical to astecia-integration/
+/astecia/astecia-integration-backup/

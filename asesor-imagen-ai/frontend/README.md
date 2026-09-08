@@ -1,6 +1,6 @@
-# asesor_imagen_ai
+# Asesor de Imagen AI — Frontend
 
-Virtual Try-On & Wardrobe Assistant with AI Recommendations
+**Asesor de Imagen AI (Frontend)** — app Flutter del asistente de moda con IA: prueba virtual de outfits y recomendaciones de vestuario.
 
 ## Getting Started
 

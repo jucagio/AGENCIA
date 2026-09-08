@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Write(reports/*)",
+      "Write(reports/**)",
       "Write(.claude/context/*)",
+      "Read",
+      "Bash(git diff --stat HEAD~1)",
+      "Bash(git log --oneline -5)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
       "Read(C:\\Users\\PCC\\Documents\\JUAN CAMILO GIL\\PROYECTOS\\Maper Videojet\\CLIENTES\\**)"
     ]
   },
@@ -23,8 +30,9 @@
       {
         "hooks": [
           {
-            "type": "agent",
-            "prompt": "Eres Ego, el Auditor de la Agencia. Una sesión de trabajo acaba de terminar. Revisa los archivos modificados recientemente en el proyecto activo, evalúa el progreso contra el plan, identifica cualquier hallazgo de calidad o seguridad, y genera un Feedback de Control breve (máximo 10 líneas) con: estado del proyecto 🟢/🟡/🔴, top 3 hallazgos si los hay, y 1 acción recomendada para la próxima sesión. Guárdalo en reports/ego-feedback-[FECHA]-[HORA].md",
+            "type": "command",
+            "command": "if [ -z \"$EGO_AUDIT_RUNNING\" ]; then\n  export EGO_AUDIT_RUNNING=1\n  cd \"${CLAUDE_PROJECT_DIR:-.}\" 2>/dev/null\n  mkdir -p reports\n  OUT=\"reports/ego-feedback-$(date +%Y%m%d-%H%M%S).md\"\n  CONTEXT=$(git status --short 2>/dev/null; echo \"---diff stat vs HEAD~1---\"; git diff --stat HEAD~1 2>/dev/null; echo \"---últimos commits---\"; git log --oneline -5 2>/dev/null)\n  PROMPT=\"Eres Ego, el Auditor de la Agencia. Sesión recién terminada. Estado de git al finalizar:\n\n${CONTEXT}\n\nGenera un Feedback de Control breve (máximo 10 líneas): estado del proyecto con emoji 🟢/🟡/🔴, top 3 hallazgos si los hay, y 1 acción recomendada para la próxima sesión.\"\n  RESULT=$(echo \"$PROMPT\" | timeout 90 claude -p 2>/dev/null)\n  STATUS=$?\n  if [ $STATUS -eq 0 ] && [ -n \"$RESULT\" ]; then\n    echo \"$RESULT\" > \"$OUT\"\n  else\n    {\n      echo \"# Ego Feedback — fallback automático (claude -p no disponible, exit $STATUS)\"\n      echo \"\"\n      echo \"## Git status\"\n      echo '```'\n      git status --short 2>/dev/null\n      echo '```'\n      echo \"\"\n      echo \"## Diff stat vs HEAD~1\"\n      echo '```'\n      git diff --stat HEAD~1 2>/dev/null\n      echo '```'\n      echo \"\"\n      echo \"## Últimos commits\"\n      echo '```'\n      git log --oneline -5 2>/dev/null\n      echo '```'\n    } > \"$OUT\"\n  fi\nfi",
+            "shell": "bash",
             "statusMessage": "Ego auditando sesión...",
             "timeout": 120
           }

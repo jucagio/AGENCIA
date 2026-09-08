@@ -181,6 +181,7 @@ PUBLIC_ROUTES: frozenset[str] = frozenset({
     "/",
     "/health",
     "/health/ready",
+    "/ready",
     "/docs",
     "/redoc",
     "/openapi.json",
@@ -284,55 +285,44 @@ async def idempotency_middleware(request: Request, call_next: CallNext) -> Respo
         # Dev / test mode without Supabase: skip replay, just execute
         return await call_next(request)
 
-    from app.core.admin_client import AdminClient  # noqa: PLC0415
+    from app.config import get_settings  # noqa: PLC0415
+    import redis.asyncio as aioredis  # noqa: PLC0415
+    import json  # noqa: PLC0415
 
-    admin = AdminClient(supabase_admin)
     settings = get_settings()
+    redis_client = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
+    
+    # CR-3: Atomic SETNX + namespace idempotency:{user_id}:{key}
+    idemp_key = f"idempotency:{user_id}:{idem_key}"
 
     try:
-        # Check for existing record
-        lookup = await (
-            admin.trusted()
-            .table("idempotency_keys")
-            .select("*")
-            .eq("key", idem_key)
-            .maybe_single()
-            .execute()
-        )
-
-        if lookup.data and lookup.data.get("status") == "completed":
-            # Replay cached response
-            cached_body = lookup.data.get("response_body", {})
-            cached_status = lookup.data.get("response_status", 200)
+        # Atomic SETNX lock
+        # We try to set the lock. If it fails, another request is processing it or it's completed.
+        lock_acquired = await redis_client.setnx(f"{idemp_key}:lock", "1")
+        if lock_acquired:
+            # Set a short TTL for the lock in case the worker crashes (e.g. 60 seconds)
+            await redis_client.expire(f"{idemp_key}:lock", 60)
+        else:
+            # Lock exists or request is already completed.
+            # Check if we have a cached completed response.
+            cached_resp = await redis_client.get(f"{idemp_key}:response")
+            if cached_resp:
+                from app.core.rate_limiter import IDEMPOTENCY_CACHE_HITS  # noqa: PLC0415
+                IDEMPOTENCY_CACHE_HITS.inc()
+                data = json.loads(cached_resp)
+                return JSONResponse(
+                    status_code=data.get("status", 200),
+                    content=data.get("body", {}),
+                    headers={"X-Idempotency-Replay": "true"},
+                )
+            # If lock exists but no cached response, it's a race condition (concurrent request)
             return JSONResponse(
-                status_code=cached_status,
-                content=cached_body,
-                headers={"X-Idempotency-Replay": "true"},
+                status_code=409,
+                content={"detail": "Concurrent request processing for the same Idempotency-Key"},
             )
-
-        if not lookup.data:
-            # Create processing record
-            from datetime import datetime, timedelta, timezone  # noqa: PLC0415
-            expires_at = (
-                datetime.now(timezone.utc) + timedelta(seconds=settings.IDEMPOTENCY_TTL_SECONDS)
-            ).isoformat()
-            await (
-                admin.trusted()
-                .table("idempotency_keys")
-                .insert({
-                    "key": idem_key,
-                    "user_id": user_id,
-                    "endpoint": request.url.path,
-                    "request_path": request.url.path,
-                    "request_method": request.method,
-                    "status": "processing",
-                    "expires_at": expires_at,
-                })
-                .execute()
-            )
-
+            
     except Exception as exc:  # noqa: BLE001
-        logger.warning("Idempotency store lookup failed (passing through): %s", exc)
+        logger.warning("Idempotency Redis lookup failed (passing through): %s", exc)
         return await call_next(request)
 
     # Execute the actual request
@@ -352,26 +342,12 @@ async def idempotency_middleware(request: Request, call_next: CallNext) -> Respo
 
         # A04-MED2: only cache successful responses (2xx) — do not lock out clients on transient errors
         if 200 <= response.status_code < 300:
-            await (
-                admin.trusted()
-                .table("idempotency_keys")
-                .update({
-                    "status": "completed",
-                    "response_status": response.status_code,
-                    "response_body": body_json,
-                })
-                .eq("key", idem_key)
-                .execute()
-            )
-        else:
-            # Mark as failed so client can retry with same key
-            await (
-                admin.trusted()
-                .table("idempotency_keys")
-                .update({"status": "failed", "response_status": response.status_code})
-                .eq("key", idem_key)
-                .execute()
-            )
+            # Cache the response
+            payload = json.dumps({"status": response.status_code, "body": body_json})
+            await redis_client.setex(f"{idemp_key}:response", settings.IDEMPOTENCY_TTL_SECONDS, payload)
+        
+        # Always remove the lock so failed requests can be retried or success is cached
+        await redis_client.delete(f"{idemp_key}:lock")
 
         # Return a new Response with the captured body
         return Response(
@@ -382,8 +358,14 @@ async def idempotency_middleware(request: Request, call_next: CallNext) -> Respo
         )
 
     except Exception as exc:  # noqa: BLE001
-        logger.warning("Idempotency store update failed: %s", exc)
-        # Return the already-consumed response as best effort (body_bytes always initialised above)
+        logger.warning("Idempotency Redis update failed: %s", exc)
+        # Ensure lock is removed even on unhandled exception
+        try:
+            await redis_client.delete(f"{idemp_key}:lock")
+        except Exception:
+            pass
+            
+        # Return the already-consumed response as best effort
         return Response(
             content=body_bytes,
             status_code=response.status_code,

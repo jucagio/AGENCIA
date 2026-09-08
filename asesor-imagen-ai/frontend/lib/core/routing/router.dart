@@ -1,46 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:asesor_imagen_ai/features/auth/presentation/providers/auth_provider.dart'
+    as auth_prov;
 import 'package:asesor_imagen_ai/features/auth/presentation/screens/login_screen.dart';
 import 'package:asesor_imagen_ai/features/auth/presentation/screens/register_screen.dart';
-import 'package:asesor_imagen_ai/features/recommendations/presentation/screens/recommendations_screen.dart';
-import 'package:asesor_imagen_ai/features/try_on/presentation/screens/try_on_screen.dart';
 import 'package:asesor_imagen_ai/features/wardrobe/presentation/screens/home_screen.dart';
-import 'package:asesor_imagen_ai/features/wardrobe/presentation/screens/wardrobe_screen.dart';
 import 'package:asesor_imagen_ai/shared/screens/onboarding_screen.dart';
-import 'package:asesor_imagen_ai/shared/screens/profile_screen.dart';
 import 'package:asesor_imagen_ai/shared/screens/splash_screen.dart';
 
 // ---------------------------------------------------------------------------
-// Auth state provider — escucha cambios de sesión de Supabase en tiempo real
-// ---------------------------------------------------------------------------
-
-/// Retorna la sesión activa o null si el usuario no está autenticado.
-/// Provider manual — no requiere riverpod_generator ni build_runner.
-final authStateProvider = StreamProvider.autoDispose<AuthState>((ref) {
-  return Supabase.instance.client.auth.onAuthStateChange;
-});
-
-// ---------------------------------------------------------------------------
 // Router provider
+// Relies on authProvider (Riverpod 3.x) instead of Supabase stream directly.
+// This makes the router safe when Supabase is not initialized (demo mode).
 // ---------------------------------------------------------------------------
 
 final routerProvider = Provider.autoDispose<GoRouter>((ref) {
-  final authStateAsync = ref.watch(authStateProvider);
+  // Rebuild router whenever auth state changes
+  ref.watch(auth_prov.authProvider);
 
   return GoRouter(
     initialLocation: SplashScreen.routeName,
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
     redirect: (BuildContext context, GoRouterState state) {
-      // Mientras carga el estado de auth → quedarse en splash
-      if (authStateAsync.isLoading || authStateAsync.hasError) {
+      final authState = ref.read(auth_prov.authProvider);
+
+      // Still loading — stay on splash
+      if (authState.status == auth_prov.AuthStatus.initial ||
+          authState.status == auth_prov.AuthStatus.loading) {
         return SplashScreen.routeName;
       }
 
-      final session = Supabase.instance.client.auth.currentSession;
-      final isAuthenticated = session != null;
+      final isAuthenticated =
+          authState.status == auth_prov.AuthStatus.authenticated;
       final currentPath = state.matchedLocation;
 
       final publicRoutes = {
@@ -60,12 +53,9 @@ final routerProvider = Provider.autoDispose<GoRouter>((ref) {
         return HomeScreen.routeName;
       }
 
-      return null; // Sin redirección
+      return null;
     },
     routes: [
-      // -----------------------------------------------------------------------
-      // Rutas públicas
-      // -----------------------------------------------------------------------
       GoRoute(
         path: SplashScreen.routeName,
         builder: (context, state) => const SplashScreen(),
@@ -82,29 +72,9 @@ final routerProvider = Provider.autoDispose<GoRouter>((ref) {
         path: RegisterScreen.routeName,
         builder: (context, state) => const RegisterScreen(),
       ),
-
-      // -----------------------------------------------------------------------
-      // Rutas protegidas
-      // -----------------------------------------------------------------------
       GoRoute(
         path: HomeScreen.routeName,
         builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: WardrobeScreen.routeName,
-        builder: (context, state) => const WardrobeScreen(),
-      ),
-      GoRoute(
-        path: TryOnScreen.routeName,
-        builder: (context, state) => const TryOnScreen(),
-      ),
-      GoRoute(
-        path: RecommendationsScreen.routeName,
-        builder: (context, state) => const RecommendationsScreen(),
-      ),
-      GoRoute(
-        path: ProfileScreen.routeName,
-        builder: (context, state) => const ProfileScreen(),
       ),
     ],
   );

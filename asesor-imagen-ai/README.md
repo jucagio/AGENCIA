@@ -1,6 +1,6 @@
 # Asesor de Imagen AI
 
-Virtual Try-On & Wardrobe Assistant with AI Recommendations
+**Asesor de Imagen AI** — asistente de moda con IA que analiza el cuerpo del usuario, prueba outfits virtualmente y recomienda vestuario personalizado.
 
 **Status:** 🔨 Sprint 0 (Infrastructure)
 

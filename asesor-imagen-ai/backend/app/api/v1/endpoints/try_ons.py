@@ -10,7 +10,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Header, Query
 
-from app.api.deps import AdminDep, CurrentUser
+from app.api.deps import AdminDep, CurrentUser, QueueDep
 from app.schemas.common import PaginationMeta, SuccessResponse
 from app.schemas.try_on import TryOnFeedbackRequest, TryOnResponse
 from app.services.try_on_service import TryOnService
@@ -26,6 +26,7 @@ router = APIRouter()
 async def create_try_on(
     user_id: CurrentUser,
     admin: AdminDep,
+    queue: QueueDep,
     wardrobe_item_id: UUID = Query(...),
     body_analysis_id: UUID = Query(...),
     idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
@@ -37,7 +38,7 @@ async def create_try_on(
     Returns 202 with {try_on_id, status: "pending", estimated_seconds: 30}.
     Cache hits return {status: "completed", result_cdn_url} immediately.
     """
-    svc = TryOnService(admin)
+    svc = TryOnService(admin, queue=queue)
     return await svc.create_try_on(
         user_id=user_id,
         wardrobe_item_id=wardrobe_item_id,

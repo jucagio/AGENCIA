@@ -52,11 +52,20 @@ def get_admin_client(request: Request) -> AdminClient:
     return AdminClient(raw_pg)  # type: ignore[arg-type]
 
 
+def get_queue(request: Request):
+    """Provide the centralized ARQ pool from app.state.queue (Sprint 0.5 T2).
+
+    May return None in dev / tests — services must handle that case.
+    """
+    return getattr(request.app.state, "queue", None)
+
+
 # ---------------------------------------------------------------------------
 # Typed aliases for use as FastAPI Depends annotations
 # ---------------------------------------------------------------------------
 
-from typing import Annotated  # noqa: E402 (must be after function defs)
+from typing import Annotated, Any  # noqa: E402 (must be after function defs)
 
 CurrentUser = Annotated[UUID, Depends(get_current_user_id)]
 AdminDep = Annotated[AdminClient, Depends(get_admin_client)]
+QueueDep = Annotated[Any, Depends(get_queue)]

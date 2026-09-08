@@ -6,24 +6,28 @@ All routes except /me are in PUBLIC_ROUTES (no JWT required).
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Request, status
+from fastapi.responses import JSONResponse
 
 from app.api.deps import AdminDep, CurrentUser
 from app.repositories.repos import ProfileRepository
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse
+from app.schemas.common import SuccessResponse
 from app.schemas.profile import ProfileResponse
 from app.services.auth_service import AuthService
+from app.core.rate_limiter import limiter
 
 router = APIRouter()
 
 
 @router.post(
     "/register",
-    response_model=TokenResponse,
+    response_model=SuccessResponse,
     status_code=201,
     summary="Register a new user via Supabase Auth",
 )
-async def register(req: RegisterRequest) -> TokenResponse:
+@limiter.limit("3/minute")
+async def register(request: Request, req: RegisterRequest) -> SuccessResponse:
     """
     Register a new user account.
 
@@ -32,15 +36,21 @@ async def register(req: RegisterRequest) -> TokenResponse:
     - 422 on duplicate email or validation failure.
     """
     svc = AuthService()
-    return await svc.register(req)
+    token_data = await svc.register(req)
+    return SuccessResponse(
+        success=True,
+        data=token_data.model_dump(),
+        message="User registered successfully"
+    )
 
 
 @router.post(
     "/login",
-    response_model=TokenResponse,
+    response_model=SuccessResponse,
     summary="Login with email + password",
 )
-async def login(req: LoginRequest) -> TokenResponse:
+@limiter.limit("5/minute")
+async def login(request: Request, req: LoginRequest) -> SuccessResponse:
     """
     Authenticate an existing user.
 
@@ -49,17 +59,24 @@ async def login(req: LoginRequest) -> TokenResponse:
     - 401 on invalid credentials.
     """
     svc = AuthService()
-    return await svc.login(req)
+    token_data = await svc.login(req)
+    return SuccessResponse(
+        success=True,
+        data=token_data.model_dump(),
+        message="Login successful"
+    )
 
 
 @router.post(
     "/refresh",
-    response_model=TokenResponse,
+    response_model=SuccessResponse,
     summary="Exchange refresh token for new access token",
 )
+@limiter.limit("10/minute")
 async def refresh(
+    request: Request,
     refresh_token: str = Body(..., embed=True),
-) -> TokenResponse:
+) -> SuccessResponse:
     """
     Refresh an expired access token.
 
@@ -67,7 +84,12 @@ async def refresh(
     - 401 if refresh_token is invalid or expired.
     """
     svc = AuthService()
-    return await svc.refresh(refresh_token)
+    token_data = await svc.refresh(refresh_token)
+    return SuccessResponse(
+        success=True,
+        data=token_data.model_dump(),
+        message="Token refreshed successfully"
+    )
 
 
 @router.get(

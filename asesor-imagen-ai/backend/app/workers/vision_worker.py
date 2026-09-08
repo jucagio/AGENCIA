@@ -55,10 +55,28 @@ async def vision_tag_wardrobe(
 ) -> dict[str, Any]:
     """
     Call Google Vision API to auto-tag a wardrobe item.
+
+    Mock mode (FEATURE_MOCK_WORKERS=true) returns canned tags without
+    calling the Vision API. Used in dev / CI.
     """
     logger.info("vision_tag_wardrobe: item=%s", wardrobe_item_id)
     settings = get_settings()
     admin = ctx.get("admin_client")
+
+    if settings.FEATURE_MOCK_WORKERS:
+        tags = {"category": "top", "primary_color": "blue", "detected_style": "casual"}
+        if admin:
+            try:
+                await (
+                    admin.trusted()
+                    .table("wardrobe_items")
+                    .update({"category": tags["category"]})
+                    .eq("id", wardrobe_item_id)
+                    .execute()
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Mock update failed: %s", exc)
+        return {"wardrobe_item_id": wardrobe_item_id, "tags": tags, "status": "completed"}
 
     try:
         image_bytes = await _download_and_validate_image(image_url)
@@ -114,6 +132,26 @@ async def vision_analyze_body(
     logger.info("vision_analyze_body: analysis=%s", body_analysis_id)
     settings = get_settings()
     admin = ctx.get("admin_client")
+
+    if settings.FEATURE_MOCK_WORKERS:
+        result = {
+            "body_type": "hourglass",
+            "skin_tone_category": "neutral",
+            "color_season": "autumn",
+            "status": "completed",
+        }
+        if admin:
+            try:
+                await (
+                    admin.trusted()
+                    .table("body_analysis")
+                    .update(result)
+                    .eq("id", body_analysis_id)
+                    .execute()
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Mock body_analysis update failed: %s", exc)
+        return {"body_analysis_id": body_analysis_id, "result": result, "status": "completed"}
 
     try:
         image_bytes = await _download_and_validate_image(image_url)

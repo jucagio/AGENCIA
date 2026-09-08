@@ -1,0 +1,80 @@
+{
+  "agents": [
+    {
+      "name": "Jarvis",
+      "model": "opus",
+      "role": "CEO & Gerente General",
+      "reports_to": "Juan Camilo Gil"
+    },
+    {
+      "name": "Jade",
+      "model": "sonnet",
+      "role": "Directora Intel & Capacitaciones",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Ego",
+      "model": "opus",
+      "role": "Auditor Supremo",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Cyber Neo",
+      "model": "opus",
+      "role": "Auditor de Seguridad Técnica",
+      "reports_to": "Ego",
+      "sub_agents": "5 paralelos"
+    },
+    {
+      "name": "Sasha",
+      "model": "opus",
+      "role": "Programadora Senior & Seguridad",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Brook",
+      "model": "sonnet",
+      "role": "Frontend, BD & Dashboards",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Erik",
+      "model": "sonnet",
+      "role": "Diseño & IA para Diseño",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Cinthya",
+      "model": "sonnet",
+      "role": "Automatización de Procesos",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Alejo",
+      "model": "opus",
+      "role": "Solutions Architect Senior",
+      "reports_to": "Jarvis"
+    },
+    {
+      "name": "Leo",
+      "model": "opus",
+      "role": "Agente Comercial Senior",
+      "reports_to": "Jarvis",
+      "collaborates_with": "Yang"
+    },
+    {
+      "name": "Yang",
+      "model": "sonnet",
+      "role": "Investigadora de Inteligencia Comercial",
+      "reports_to": "Jarvis",
+      "collaborates_with": "Leo"
+    },
+    {
+      "name": "Mapi",
+      "model": "sonnet",
+      "role": "Redacción y Edición de Ofertas",
+      "reports_to": "Jarvis",
+      "collaborates_with": "Leo"
+    }
+  ]
+}

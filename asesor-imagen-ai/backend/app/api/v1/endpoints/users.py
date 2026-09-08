@@ -4,11 +4,13 @@ User endpoints — profile management and account deletion.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, Request
+from fastapi.responses import JSONResponse
 
 from app.api.deps import AdminDep, CurrentUser
 from app.schemas.profile import ProfileResponse, ProfileUpdateRequest
 from app.services.user_service import UserService
+from app.core.rate_limiter import limiter
 
 router = APIRouter()
 
@@ -42,6 +44,15 @@ async def update_profile(
     svc = UserService(admin)
     profile = await svc.update_profile(user_id=user_id, update=update)
     return ProfileResponse.model_validate(profile.model_dump())
+
+
+@router.get("/me/usage")
+@limiter.limit("30/hour")
+async def get_my_usage(request: Request, current_user: CurrentUser, admin: AdminDep) -> JSONResponse:
+    """Return the authenticated user's usage stats."""
+    svc = UserService(admin)
+    usage = await svc.get_user_usage(user_id=current_user)
+    return JSONResponse(content=usage)
 
 
 @router.delete(

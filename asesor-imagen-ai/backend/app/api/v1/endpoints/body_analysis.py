@@ -11,6 +11,8 @@ from fastapi import APIRouter, Body
 from app.api.deps import AdminDep, CurrentUser
 from app.schemas.body_analysis import BodyAnalysisResponse
 from app.services.body_analysis_service import BodyAnalysisService
+from app.core.rate_limiter import limiter
+from fastapi import Request
 
 router = APIRouter()
 
@@ -20,7 +22,9 @@ router = APIRouter()
     status_code=202,
     summary="Start body analysis",
 )
+@limiter.limit("30/hour")
 async def create_analysis(
+    request: Request,
     user_id: CurrentUser,
     admin: AdminDep,
     image_url: str | None = Body(default=None, embed=True),
